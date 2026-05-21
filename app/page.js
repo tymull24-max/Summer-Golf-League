@@ -181,3 +181,92 @@ export default function SummerGolfLeagueWebsite() {
                       <td className="px-8 py-5 text-center">{team.draws}</td>
                       <td className="px-8 py-5 text-center">{team.losses}</td>
                       <td className="px-8 py-5 text-center font-bold">
+                        {team.strokeDiff}
+                      </td>
+                      <td className="px-8 py-5 text-center font-bold text-green-700">
+                        {team.points}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* SCORE SUBMISSION + SCHEDULE */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* SCORE SUBMISSION */}
+          <div className="bg-white text-slate-900 rounded-3xl p-8 shadow-2xl">
+            <h2 className="text-3xl font-bold mb-6">Submit Match Result</h2>
+
+            <div className="space-y-5">
+              <select
+                className="w-full border border-slate-300 rounded-2xl px-5 py-4 text-black"
+                value={winner}
+                onChange={(e) => setWinner(e.target.value)}
+              >
+                <option>Select Winning Team</option>
+                {teams.map((team) => (
+                  <option key={team.name}>{team.name}</option>
+                ))}
+              </select>
+
+              <div className="grid grid-cols-2 gap-5">
+                <input
+                  type="number"
+                  placeholder="Winner Score"
+                  className="border border-slate-300 rounded-2xl px-5 py-4 text-black"
+                  value={winnerScore}
+                  onChange={(e) => setWinnerScore(e.target.value)}
+                />
+
+                <input
+                  type="number"
+                  placeholder="Loser Score"
+                  className="border border-slate-300 rounded-2xl px-5 py-4 text-black"
+                  value={loserScore}
+                  onChange={(e) => setLoserScore(e.target.value)}
+                />
+              </div>
+
+              <select
+                className="w-full border border-slate-300 rounded-2xl px-5 py-4 text-black"
+                value={opponent}
+                onChange={(e) => setOpponent(e.target.value)}
+              >
+                <option>Select Opponent</option>
+                {teams.map((team) => (
+                  <option key={team.name}>{team.name}</option>
+                ))}
+              </select>
+
+              <button
+                onClick={submitMatch}
+                className="w-full bg-black hover:bg-slate-800 text-white font-bold py-4 rounded-2xl transition-colors"
+              >
+                Upload Final Score
+              </button>
+            </div>
+
+            <div className="mt-6 bg-green-50 border border-green-200 rounded-2xl p-5 text-sm text-green-800">
+              Example: Banana Hammocks def. Shock Tops 82–87
+            </div>
+          </div>
+
+          {/* SCHEDULE */}
+          <div className="bg-white text-slate-900 rounded-3xl p-8 shadow-2xl">
+            <h2 className="text-3xl font-bold mb-6">League Schedule</h2>
+
+            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-md">
+              <img
+                src="https://placehold.co/1200x1600?text=Upload+schedule.jpg+to+replace+this+image"
+                alt="League Schedule"
+                className="w-full"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

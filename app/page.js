@@ -1,44 +1,32 @@
-import Link from "next/link";
-import StandingsTable from "../components/StandingsTable";
+// app/page.js
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="space-y-12">
+    <div style={{ padding: "2rem" }}>
+      <h1>Summer Golf League</h1>
+      <p>Welcome to the official league website. Use the links below to navigate.</p>
 
-      <section className="bg-gradient-to-r from-green-700 to-green-500 text-white py-20 rounded-xl shadow-lg text-center">
-        <h1 className="text-5xl font-extrabold mb-4">Summer 2026 Golf League</h1>
-        <p className="text-xl opacity-90">
-          Pool Play • Live Standings • Player Leaderboard • Championship Bracket
-        </p>
-      </section>
+      <nav style={{ marginTop: "2rem" }}>
+        <ul style={{ listStyle: "none", padding: 0, fontSize: "18px" }}>
+          <li style={{ marginBottom: "1rem" }}>
+            <a href="/standings" style={{ textDecoration: "none", color: "blue" }}>
+              📊 Standings
+            </a>
+          </li>
 
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Link href="/schedule" className="p-6 bg-white shadow rounded-lg hover:shadow-lg transition">
-          <h2 className="text-xl font-bold mb-2">📅 Schedule</h2>
-          <p>Every matchup, every round.</p>
-        </Link>
+          <li style={{ marginBottom: "1rem" }}>
+            <a href="/schedule" style={{ textDecoration: "none", color: "blue" }}>
+              📅 Schedule
+            </a>
+          </li>
 
-        <Link href="/teams" className="p-6 bg-white shadow rounded-lg hover:shadow-lg transition">
-          <h2 className="text-xl font-bold mb-2">⛳ Teams</h2>
-          <p>Rosters, vibes, and rivalries.</p>
-        </Link>
-
-        <Link href="/standings" className="p-6 bg-white shadow rounded-lg hover:shadow-lg transition">
-          <h2 className="text-xl font-bold mb-2">🏆 Standings</h2>
-          <p>Wins and stroke differential.</p>
-        </Link>
-
-        <Link href="/leaderboard" className="p-6 bg-white shadow rounded-lg hover:shadow-lg transition">
-          <h2 className="text-xl font-bold mb-2">📊 Leaderboard</h2>
-          <p>Who’s playing out of their mind.</p>
-        </Link>
-      </section>
-
-      <section>
-        <h2 className="text-3xl font-bold mb-4">Current Standings</h2>
-        <StandingsTable />
-      </section>
-
+          <li style={{ marginBottom: "1rem" }}>
+            <a href="/admin" style={{ textDecoration: "none", color: "blue" }}>
+              📝 Admin Score Entry
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 }

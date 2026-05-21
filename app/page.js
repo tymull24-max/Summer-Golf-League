@@ -72,7 +72,6 @@ export default function SummerGolfLeagueWebsite() {
 
     setTeams((prev) =>
       prev.map((team) => {
-        // WINNER
         if (team.name === winner && wScore > lScore) {
           return {
             ...team,
@@ -82,7 +81,6 @@ export default function SummerGolfLeagueWebsite() {
           };
         }
 
-        // LOSER
         if (team.name === opponent && wScore > lScore) {
           return {
             ...team,
@@ -91,7 +89,6 @@ export default function SummerGolfLeagueWebsite() {
           };
         }
 
-        // DRAW
         if (wScore === lScore) {
           if (team.name === winner || team.name === opponent) {
             return {
@@ -113,22 +110,22 @@ export default function SummerGolfLeagueWebsite() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 text-slate-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-950 via-green-900 to-green-800 text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-10">
 
         {/* HEADER */}
         <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div>
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight">
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tight drop-shadow-lg">
               Summer 2026 Golf League
             </h1>
-            <p className="text-slate-600 mt-3 text-lg">
+            <p className="text-green-200 mt-3 text-lg">
               Live standings, score uploads, and tournament tracking
             </p>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-3xl px-8 py-5 shadow-md">
-            <p className="text-slate-500 text-sm uppercase tracking-widest">
+          <div className="bg-green-700/40 border border-green-500 rounded-3xl px-8 py-5 shadow-xl backdrop-blur-sm">
+            <p className="text-green-200 text-sm uppercase tracking-widest">
               Mobile Friendly
             </p>
             <p className="text-2xl font-bold mt-2">
@@ -138,8 +135,8 @@ export default function SummerGolfLeagueWebsite() {
         </header>
 
         {/* STANDINGS */}
-        <section className="bg-white rounded-3xl shadow-md overflow-hidden border border-slate-200">
-          <div className="px-6 py-5 border-b bg-slate-50 flex items-center justify-between">
+        <section className="bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden">
+          <div className="px-6 py-5 border-b bg-slate-100 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold">Live Standings</h2>
               <p className="text-slate-500 text-sm">
@@ -147,14 +144,14 @@ export default function SummerGolfLeagueWebsite() {
               </p>
             </div>
 
-            <div className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold">
+            <div className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold animate-pulse">
               LIVE
             </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px]">
-              <thead className="bg-slate-100 text-slate-600 text-sm uppercase tracking-wide">
+              <thead className="bg-slate-50 text-slate-600 text-sm uppercase tracking-wide">
                 <tr>
                   <th className="text-left px-6 py-4">Rank</th>
                   <th className="text-left px-6 py-4">Team</th>
@@ -173,7 +170,7 @@ export default function SummerGolfLeagueWebsite() {
                   .map((team, index) => (
                     <tr
                       key={team.name}
-                      className="border-b hover:bg-slate-50 transition-colors"
+                      className="border-b hover:bg-green-50 transition-colors"
                     >
                       <td className="px-6 py-5 font-bold">#{index + 1}</td>
                       <td className="px-6 py-5 font-semibold">{team.name}</td>
@@ -199,12 +196,12 @@ export default function SummerGolfLeagueWebsite() {
         {/* SCORE SUBMISSION + SCHEDULE */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* SCORE SUBMISSION */}
-          <div className="bg-white rounded-3xl p-6 shadow-md border border-slate-200">
+          <div className="bg-white text-slate-900 rounded-3xl p-6 shadow-2xl">
             <h2 className="text-2xl font-bold mb-4">Submit Match Result</h2>
 
             <div className="space-y-4">
               <select
-                className="w-full border border-slate-300 rounded-2xl px-4 py-3"
+                className="w-full border border-slate-300 rounded-2xl px-4 py-3 text-black"
                 value={winner}
                 onChange={(e) => setWinner(e.target.value)}
               >
@@ -218,7 +215,7 @@ export default function SummerGolfLeagueWebsite() {
                 <input
                   type="number"
                   placeholder="Winner Score"
-                  className="border border-slate-300 rounded-2xl px-4 py-3"
+                  className="border border-slate-300 rounded-2xl px-4 py-3 text-black"
                   value={winnerScore}
                   onChange={(e) => setWinnerScore(e.target.value)}
                 />
@@ -226,50 +223,6 @@ export default function SummerGolfLeagueWebsite() {
                 <input
                   type="number"
                   placeholder="Loser Score"
-                  className="border border-slate-300 rounded-2xl px-4 py-3"
+                  className="border border-slate-300 rounded-2xl px-4 py-3 text-black"
                   value={loserScore}
-                  onChange={(e) => setLoserScore(e.target.value)}
-                />
-              </div>
-
-              <select
-                className="w-full border border-slate-300 rounded-2xl px-4 py-3"
-                value={opponent}
-                onChange={(e) => setOpponent(e.target.value)}
-              >
-                <option>Select Opponent</option>
-                {teams.map((team) => (
-                  <option key={team.name}>{team.name}</option>
-                ))}
-              </select>
-
-              <button
-                onClick={submitMatch}
-                className="w-full bg-black hover:bg-slate-800 text-white font-bold py-3 rounded-2xl transition-colors"
-              >
-                Upload Final Score
-              </button>
-            </div>
-
-            <div className="mt-5 bg-slate-100 border border-slate-200 rounded-2xl p-4 text-sm text-slate-700">
-              Example: Banana Hammocks def. Shock Tops 82–87
-            </div>
-          </div>
-
-          {/* SCHEDULE */}
-          <div className="bg-white rounded-3xl p-6 shadow-md border border-slate-200">
-            <h2 className="text-2xl font-bold mb-4">League Schedule</h2>
-
-            <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-              <img
-                src="https://placehold.co/1200x1600?text=Upload+schedule.jpg+to+replace+this+image"
-                alt="League Schedule"
-                className="w-full"
-              />
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-  );
-}
+                  onChange={(e) =>

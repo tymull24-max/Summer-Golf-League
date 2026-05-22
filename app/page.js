@@ -28,30 +28,14 @@ export default function SummerGolfLeagueWebsite() {
     setTeams(prev =>
       prev.map(team => {
         if (team.name === winner && w < l) {
-          return {
-            ...team,
-            wins: team.wins + 1,
-            points: team.points + 3,
-            strokeDiff: team.strokeDiff + diff,
-          };
+          return { ...team, wins: team.wins + 1, points: team.points + 3, strokeDiff: team.strokeDiff + diff };
         }
-
         if (team.name === opponent && w < l) {
-          return {
-            ...team,
-            losses: team.losses + 1,
-            strokeDiff: team.strokeDiff - diff,
-          };
+          return { ...team, losses: team.losses + 1, strokeDiff: team.strokeDiff - diff };
         }
-
         if (w === l && (team.name === winner || team.name === opponent)) {
-          return {
-            ...team,
-            draws: team.draws + 1,
-            points: team.points + 1,
-          };
+          return { ...team, draws: team.draws + 1, points: team.points + 1 };
         }
-
         return team;
       })
     );
@@ -86,30 +70,16 @@ export default function SummerGolfLeagueWebsite() {
           width: "100%",
           backgroundColor: "#064e3b",
           color: "white",
-          padding: "32px 0",
+          padding: "40px 0",
           boxShadow: "0 8px 20px rgba(0,0,0,0.4)",
           borderBottom: "4px solid #047857",
         }}
       >
-        <div
-          style={{
-            maxWidth: "1120px",
-            margin: "0 auto",
-            padding: "0 24px",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "48px",
-              fontWeight: 900,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
+        <div style={{ maxWidth: "1120px", margin: "0 auto", padding: "0 24px" }}>
+          <h1 style={{ fontSize: "56px", fontWeight: 900, letterSpacing: "0.08em" }}>
             2026 Summer Golf League
           </h1>
 
-          {/* Light green accent bar */}
           <div
             style={{
               width: "260px",
@@ -121,41 +91,19 @@ export default function SummerGolfLeagueWebsite() {
             }}
           ></div>
 
-          {/* Nav links under title, left side */}
-          <nav
-            style={{
-              display: "flex",
-              gap: "32px",
-              fontSize: "18px",
-              fontWeight: 600,
-              color: "#bbf7d0",
-            }}
-          >
-            <a href="#" style={{ color: "inherit", textDecoration: "none" }}>
-              Home
-            </a>
-            <a href="#standings" style={{ color: "inherit", textDecoration: "none" }}>
-              Standings
-            </a>
-            <a href="#schedule" style={{ color: "inherit", textDecoration: "none" }}>
-              Schedule
-            </a>
-            <a href="#submit" style={{ color: "inherit", textDecoration: "none" }}>
-              Submit Score
-            </a>
+          <nav style={{ display: "flex", gap: "32px", fontSize: "20px", fontWeight: 600, color: "#bbf7d0" }}>
+            <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Home</a>
+            <a href="#standings" style={{ color: "inherit", textDecoration: "none" }}>Standings</a>
+            <a href="#schedule" style={{ color: "inherit", textDecoration: "none" }}>Schedule</a>
+            <a href="#submit" style={{ color: "inherit", textDecoration: "none" }}>Submit Score</a>
           </nav>
         </div>
       </header>
 
       {/* MAIN CONTENT */}
-      <main
-        style={{
-          maxWidth: "1120px",
-          margin: "0 auto",
-          padding: "40px 16px 60px",
-        }}
-      >
-        {/* STANDINGS */}
+      <main style={{ maxWidth: "1120px", margin: "0 auto", padding: "40px 16px 60px" }}>
+        
+        {/* FULL-WIDTH STANDINGS */}
         <section
           id="standings"
           style={{
@@ -174,11 +122,10 @@ export default function SummerGolfLeagueWebsite() {
               borderBottom: "1px solid #e2e8f0",
               backgroundColor: "#f1f5f9",
               display: "flex",
-              alignItems: "center",
               justifyContent: "space-between",
             }}
           >
-            <h2 style={{ fontSize: "22px", fontWeight: 800 }}>Live Standings</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: 800 }}>Live Standings</h2>
             <div
               style={{
                 backgroundColor: "#dcfce7",
@@ -194,13 +141,7 @@ export default function SummerGolfLeagueWebsite() {
           </div>
 
           <div style={{ width: "100%", overflowX: "auto" }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: "14px",
-              }}
-            >
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
               <thead>
                 <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
                   <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>Rank</th>
@@ -214,28 +155,19 @@ export default function SummerGolfLeagueWebsite() {
                   <th style={{ padding: "10px" }}>Points</th>
                 </tr>
               </thead>
+
               <tbody>
                 {sorted.map((team, index) => (
                   <tr key={team.name} style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: 600 }}>
-                      #{index + 1}
-                    </td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: 700 }}>
-                      {team.name}
-                    </td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: 600 }}>#{index + 1}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: 700 }}>{team.name}</td>
                     <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", color: "#475569" }}>
                       {team.players.join(" & ")}
                     </td>
                     <td style={{ padding: "12px 40px" }}></td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>
-                      {team.wins}
-                    </td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>
-                      {team.losses}
-                    </td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>
-                      {team.draws}
-                    </td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.wins}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.losses}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.draws}</td>
                     <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center", fontWeight: 600 }}>
                       {team.strokeDiff}
                     </td>
@@ -249,276 +181,219 @@ export default function SummerGolfLeagueWebsite() {
           </div>
         </section>
 
-        {/* BOTTOM TWO BOXES — CENTERED, SIDE BY SIDE */}
-        <section
-          id="submit"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "32px",
-          }}
-        >
+        {/* SUBMIT SCORE — CENTERED */}
+        <section style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "32px", // medium gap
-              flexWrap: "wrap",
+              backgroundColor: "white",
+              color: "#0f172a",
+              borderRadius: "16px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+              padding: "24px",
+              width: "100%",
+              maxWidth: "420px",
             }}
           >
-            {/* LEFT CARD */}
+            <h2 style={{ fontSize: "24px", fontWeight: 800, marginBottom: "16px" }}>
+              Submit Match Result
+            </h2>
+
             <div
               style={{
-                backgroundColor: "white",
-                color: "#0f172a",
-                borderRadius: "16px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-                padding: "24px",
                 width: "100%",
-                maxWidth: "420px",
-                display: "flex",
-                flexDirection: "column",
+                border: "2px solid #cbd5e1",
+                borderRadius: "12px",
+                overflow: "hidden",
               }}
             >
-              <h2 style={{ fontSize: "22px", fontWeight: 800, marginBottom: "16px" }}>
-                Submit Match Result
-              </h2>
-
-              <div
-                style={{
-                  width: "100%",
-                  border: "2px solid #cbd5e1",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                }}
-              >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-                  <tbody>
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                <tbody>
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc", width: "30%" }}>
+                      Winning Team
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      <select
+                        value={winner}
+                        onChange={e => setWinner(e.target.value)}
                         style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                          background: "#f8fafc",
-                          width: "30%",
+                          width: "100%",
+                          padding: "8px",
+                          borderRadius: "8px",
+                          border: "1px solid #cbd5e1",
                         }}
                       >
-                        Winning Team
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        <select
-                          value={winner}
-                          onChange={e => setWinner(e.target.value)}
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "8px",
-                            border: "1px solid #cbd5e1",
-                          }}
-                        >
-                          <option>Select Winning Team</option>
-                          {teams.map(team => (
-                            <option key={team.name}>{team.name}</option>
-                          ))}
-                        </select>
-                      </td>
-                    </tr>
+                        <option>Select Winning Team</option>
+                        {teams.map(team => (
+                          <option key={team.name}>{team.name}</option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
 
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc" }}>
+                      Winner Score
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      <input
+                        type="number"
+                        value={winnerScore}
+                        onChange={e => setWinnerScore(e.target.value)}
+                        placeholder="Enter winner score"
                         style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                          background: "#f8fafc",
+                          width: "100%",
+                          padding: "8px",
+                          borderRadius: "8px",
+                          border: "1px solid #cbd5e1",
+                        }}
+                      />
+                    </td>
+                  </tr>
+
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc" }}>
+                      Opponent
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      <select
+                        value={opponent}
+                        onChange={e => setOpponent(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "8px",
+                          borderRadius: "8px",
+                          border: "1px solid #cbd5e1",
                         }}
                       >
-                        Winner Score
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        <input
-                          type="number"
-                          value={winnerScore}
-                          onChange={e => setWinnerScore(e.target.value)}
-                          placeholder="Enter winner score"
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "8px",
-                            border: "1px solid #cbd5e1",
-                          }}
-                        />
-                      </td>
-                    </tr>
+                        <option>Select Opponent</option>
+                        {teams.map(team => (
+                          <option key={team.name}>{team.name}</option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
 
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc" }}>
+                      Loser Score
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      <input
+                        type="number"
+                        value={loserScore}
+                        onChange={e => setLoserScore(e.target.value)}
+                        placeholder="Enter loser score"
                         style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                          background: "#f8fafc",
+                          width: "100%",
+                          padding: "8px",
+                          borderRadius: "8px",
+                          border: "1px solid #cbd5e1",
                         }}
-                      >
-                        Opponent
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        <select
-                          value={opponent}
-                          onChange={e => setOpponent(e.target.value)}
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "8px",
-                            border: "1px solid #cbd5e1",
-                          }}
-                        >
-                          <option>Select Opponent</option>
-                          {teams.map(team => (
-                            <option key={team.name}>{team.name}</option>
-                          ))}
-                        </select>
-                      </td>
-                    </tr>
-
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                          background: "#f8fafc",
-                        }}
-                      >
-                        Loser Score
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        <input
-                          type="number"
-                          value={loserScore}
-                          onChange={e => setLoserScore(e.target.value)}
-                          placeholder="Enter loser score"
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "8px",
-                            border: "1px solid #cbd5e1",
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <button
-                onClick={submitMatch}
-                style={{
-                  marginTop: "16px",
-                  width: "100%",
-                  backgroundColor: "#065f46",
-                  color: "white",
-                  fontWeight: 600,
-                  padding: "12px",
-                  borderRadius: "12px",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Upload Final Score
-              </button>
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            {/* RIGHT CARD */}
-            <div
+            <button
+              onClick={submitMatch}
               style={{
-                backgroundColor: "white",
-                color: "#0f172a",
-                borderRadius: "16px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-                padding: "24px",
+                marginTop: "16px",
                 width: "100%",
-                maxWidth: "420px",
-                display: "flex",
-                flexDirection: "column",
+                backgroundColor: "#065f46",
+                color: "white",
+                fontWeight: 600,
+                padding: "12px",
+                borderRadius: "12px",
+                border: "none",
+                cursor: "pointer",
               }}
             >
-              <h2 style={{ fontSize: "22px", fontWeight: 800, marginBottom: "16px" }}>
-                Tournament Bracket
-              </h2>
-
-              <div
-                style={{
-                  width: "100%",
-                  border: "2px solid #cbd5e1",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                }}
-              >
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-                  <tbody>
-                    {/* Play-In */}
-                    <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", fontWeight: 700 }}>Play‑In Round</td>
-                      <td></td>
-                    </tr>
-
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", fontWeight: 600 }}>
-                        #{sorted.indexOf(seed3) + 1} {seed3.name}
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        vs #{sorted.indexOf(seed6) + 1} {seed6.name}
-                      </td>
-                    </tr>
-
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", fontWeight: 600 }}>
-                        #{sorted.indexOf(seed4) + 1} {seed4.name}
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        vs #{sorted.indexOf(seed5) + 1} {seed5.name}
-                      </td>
-                    </tr>
-
-                    {/* Semifinals */}
-                    <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", fontWeight: 700 }}>Semifinals</td>
-                      <td></td>
-                    </tr>
-
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", fontWeight: 600 }}>
-                        #{sorted.indexOf(seed1) + 1} {seed1.name}
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        vs Winner of #{sorted.indexOf(seed4) + 1} / #{sorted.indexOf(seed5) + 1}
-                      </td>
-                    </tr>
-
-                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", fontWeight: 600 }}>
-                        #{sorted.indexOf(seed2) + 1} {seed2.name}
-                      </td>
-                      <td style={{ padding: "12px" }}>
-                        vs Winner of #{sorted.indexOf(seed3) + 1} / #{sorted.indexOf(seed6) + 1}
-                      </td>
-                    </tr>
-
-                    {/* Championship */}
-                    <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", fontWeight: 700 }}>Championship</td>
-                      <td></td>
-                    </tr>
-
-                    <tr>
-                      <td style={{ padding: "12px", fontWeight: 600 }}>Winner</td>
-                      <td style={{ padding: "12px" }}>________________________</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+              Upload Final Score
+            </button>
           </div>
         </section>
-      </main>
-    </div>
-  );
-}
+
+        {/* FULL-WIDTH BRACKET */}
+        <section
+          style={{
+            backgroundColor: "white",
+            color: "#0f172a",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+            padding: "24px",
+            width: "100%",
+          }}
+        >
+          <h2 style={{ fontSize: "24px", fontWeight: 800, marginBottom: "16px" }}>
+            Tournament Bracket
+          </h2>
+
+          <div
+            style={{
+              width: "100%",
+              border: "2px solid #cbd5e1",
+              borderRadius: "12px",
+              overflow: "hidden",
+            }}
+          >
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+              <tbody>
+                {/* Play-In */}
+                <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
+                  <td style={{ padding: "12px", fontWeight: 700 }}>Play‑In Round</td>
+                  <td></td>
+                </tr>
+
+                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                    #{sorted.indexOf(seed3) + 1} {seed3.name}
+                  </td>
+                  <td style={{ padding: "12px" }}>
+                    vs #{sorted.indexOf(seed6) + 1} {seed6.name}
+                  </td>
+                </tr>
+
+                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                    #{sorted.indexOf(seed4) + 1} {seed4.name}
+                  </td>
+                  <td style={{ padding: "12px" }}>
+                    vs #{sorted.indexOf(seed5) + 1} {seed5.name}
+                  </td>
+                </tr>
+
+                {/* Semifinals */}
+                <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
+                  <td style={{ padding: "12px", fontWeight: 700 }}>Semifinals</td>
+                  <td></td>
+                </tr>
+
+                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                    #{sorted.indexOf(seed1) + 1} {seed1.name}
+                  </td>
+                  <td style={{ padding: "12px" }}>
+                    vs Winner of #{sorted.indexOf(seed4) + 1} / #{sorted.indexOf(seed5) + 1}
+                  </td>
+                </tr>
+
+                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                    #{sorted.indexOf(seed2) + 1} {seed2.name}
+                  </td>
+                  <td style={{ padding: "12px" }}>
+                    vs Winner of #{sorted.indexOf(seed3) + 1} / #{sorted.indexOf(seed6) + 1}
+                  </td>
+                </tr>
+
+                {/* Championship */}
+                <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
+                  <td style={{ padding: "12px", fontWeight: 700 }}>Championship</td>
+                  <td></td>
+                </tr>
+
+                <tr>
+                  <td style={{ padding: "12px", font

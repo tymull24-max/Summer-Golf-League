@@ -74,17 +74,17 @@ export default function SummerGolfLeagueWebsite() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-950 via-green-900 to-green-800 text-white">
 
-      {/* HEADER */}
-      <nav className="w-full bg-green-900 text-white py-8 shadow-lg border-b-4 border-green-600">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* SCROLLING HEADER */}
+      <nav className="w-full bg-green-900 text-white py-12 shadow-xl border-b-4 border-green-700">
+        <div className="max-w-7xl mx-auto px-6">
 
-          <h1 className="text-5xl font-extrabold tracking-wide text-white">
+          <h1 className="text-6xl font-extrabold tracking-wide text-white">
             2026 Summer Golf League
           </h1>
 
-          <div className="w-48 h-1 bg-green-300 mt-3 mb-5"></div>
+          <div className="w-64 h-2 bg-green-300 mt-4 mb-6 rounded-full"></div>
 
-          <div className="flex gap-10 text-lg font-semibold text-green-100">
+          <div className="flex gap-12 text-2xl font-semibold text-green-100">
             <a href="#" className="hover:text-white transition">Home</a>
             <a href="#standings" className="hover:text-white transition">Standings</a>
             <a href="#schedule" className="hover:text-white transition">Schedule</a>
@@ -140,7 +140,7 @@ export default function SummerGolfLeagueWebsite() {
         </section>
 
         {/* RESPONSIVE SPLIT (B) WITH ALIGNMENT LOCK */}
-        <section id="submit" className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start content-start place-items-start">
+        <section id="submit" className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start content-start place-items-start min-h-[400px]">
 
           {/* LEFT SIDE — UPLOAD SCORE */}
           <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg flex flex-col justify-start h-full">

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function SummerGolfLeagueWebsite() {
+export default function Page() {
   const [teams, setTeams] = useState([
     { name: "Banana Hammocks", players: ["Tyler Mull", "Marco Morrison"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
     { name: "Smoove Operators", players: ["Paul Carr", "Grant Dzierwa"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
@@ -56,124 +56,62 @@ export default function SummerGolfLeagueWebsite() {
   const seed6 = sorted[5];
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(to bottom, #022c22, #064e3b, #065f46)",
-        color: "white",
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-      }}
-    >
+    <div className="min-h-screen bg-gradient-to-b from-green-950 via-green-900 to-green-800 text-white">
+
       {/* HEADER */}
-      <header
-        style={{
-          width: "100%",
-          backgroundColor: "#064e3b",
-          color: "white",
-          padding: "40px 0",
-          boxShadow: "0 8px 20px rgba(0,0,0,0.4)",
-          borderBottom: "4px solid #047857",
-        }}
-      >
-        <div style={{ maxWidth: "1120px", margin: "0 auto", padding: "0 24px" }}>
-          <h1 style={{ fontSize: "56px", fontWeight: 900, letterSpacing: "0.08em" }}>
-            2026 Summer Golf League
-          </h1>
+      <header className="w-full bg-green-900 text-white py-12 shadow-xl border-b-4 border-green-700">
+        <div className="max-w-7xl mx-auto px-6">
+          <h1 className="text-6xl font-extrabold tracking-wide">2026 Summer Golf League</h1>
 
-          <div
-            style={{
-              width: "260px",
-              height: "8px",
-              backgroundColor: "#6ee7b7",
-              marginTop: "16px",
-              marginBottom: "24px",
-              borderRadius: "999px",
-            }}
-          ></div>
+          <div className="w-64 h-2 bg-green-300 mt-4 mb-6 rounded-full"></div>
 
-          <nav style={{ display: "flex", gap: "32px", fontSize: "20px", fontWeight: 600, color: "#bbf7d0" }}>
-            <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Home</a>
-            <a href="#standings" style={{ color: "inherit", textDecoration: "none" }}>Standings</a>
-            <a href="#schedule" style={{ color: "inherit", textDecoration: "none" }}>Schedule</a>
-            <a href="#submit" style={{ color: "inherit", textDecoration: "none" }}>Submit Score</a>
+          <nav className="flex gap-12 text-2xl font-semibold text-green-100">
+            <a href="#" className="hover:text-white transition">Home</a>
+            <a href="#standings" className="hover:text-white transition">Standings</a>
+            <a href="#schedule" className="hover:text-white transition">Schedule</a>
+            <a href="#submit" className="hover:text-white transition">Submit Score</a>
           </nav>
         </div>
       </header>
 
       {/* MAIN CONTENT */}
-      <main style={{ maxWidth: "1120px", margin: "0 auto", padding: "40px 16px 60px" }}>
-        
-        {/* FULL-WIDTH STANDINGS */}
-        <section
-          id="standings"
-          style={{
-            backgroundColor: "white",
-            color: "#0f172a",
-            borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-            overflow: "hidden",
-            width: "100%",
-            marginBottom: "40px",
-          }}
-        >
-          <div
-            style={{
-              padding: "16px 24px",
-              borderBottom: "1px solid #e2e8f0",
-              backgroundColor: "#f1f5f9",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <h2 style={{ fontSize: "24px", fontWeight: 800 }}>Live Standings</h2>
-            <div
-              style={{
-                backgroundColor: "#dcfce7",
-                color: "#166534",
-                padding: "4px 16px",
-                borderRadius: "999px",
-                fontSize: "11px",
-                fontWeight: 800,
-              }}
-            >
-              LIVE
-            </div>
+      <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
+
+        {/* STANDINGS */}
+        <section id="standings" className="bg-white text-slate-900 rounded-2xl shadow-xl overflow-hidden w-full">
+          <div className="px-6 py-4 border-b bg-slate-100 flex items-center justify-between">
+            <h2 className="text-2xl font-bold">Live Standings</h2>
+            <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold">LIVE</div>
           </div>
 
-          <div style={{ width: "100%", overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
               <thead>
-                <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                  <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>Rank</th>
-                  <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>Team</th>
-                  <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>Players</th>
-                  <th style={{ padding: "10px 40px" }}></th>
-                  <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>Wins</th>
-                  <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>Losses</th>
-                  <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>Draws</th>
-                  <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>+/−</th>
-                  <th style={{ padding: "10px" }}>Points</th>
+                <tr className="bg-slate-100 border-b-2 border-slate-300">
+                  <th className="p-3 border-r-2 border-slate-300">Rank</th>
+                  <th className="p-3 border-r-2 border-slate-300">Team</th>
+                  <th className="p-3 border-r-2 border-slate-300">Players</th>
+                  <th className="p-3"></th>
+                  <th className="p-3 border-r-2 border-slate-300">Wins</th>
+                  <th className="p-3 border-r-2 border-slate-300">Losses</th>
+                  <th className="p-3 border-r-2 border-slate-300">Draws</th>
+                  <th className="p-3 border-r-2 border-slate-300">+/−</th>
+                  <th className="p-3">Points</th>
                 </tr>
               </thead>
 
               <tbody>
                 {sorted.map((team, index) => (
-                  <tr key={team.name} style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: 600 }}>#{index + 1}</td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: 700 }}>{team.name}</td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", color: "#475569" }}>
-                      {team.players.join(" & ")}
-                    </td>
-                    <td style={{ padding: "12px 40px" }}></td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.wins}</td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.losses}</td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.draws}</td>
-                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center", fontWeight: 600 }}>
-                      {team.strokeDiff}
-                    </td>
-                    <td style={{ padding: "12px", textAlign: "center", fontWeight: 700, color: "#166534" }}>
-                      {team.points}
-                    </td>
+                  <tr key={team.name} className="border-b-2 border-slate-300">
+                    <td className="p-3 border-r-2 border-slate-300 font-semibold">#{index + 1}</td>
+                    <td className="p-3 border-r-2 border-slate-300 font-bold">{team.name}</td>
+                    <td className="p-3 border-r-2 border-slate-300 text-slate-600">{team.players.join(" & ")}</td>
+                    <td className="p-3"></td>
+                    <td className="p-3 border-r-2 border-slate-300 text-center">{team.wins}</td>
+                    <td className="p-3 border-r-2 border-slate-300 text-center">{team.losses}</td>
+                    <td className="p-3 border-r-2 border-slate-300 text-center">{team.draws}</td>
+                    <td className="p-3 border-r-2 border-slate-300 text-center font-semibold">{team.strokeDiff}</td>
+                    <td className="p-3 text-center font-bold text-green-700">{team.points}</td>
                   </tr>
                 ))}
               </tbody>
@@ -181,47 +119,21 @@ export default function SummerGolfLeagueWebsite() {
           </div>
         </section>
 
-        {/* SUBMIT SCORE — CENTERED */}
-        <section style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
-          <div
-            style={{
-              backgroundColor: "white",
-              color: "#0f172a",
-              borderRadius: "16px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "420px",
-            }}
-          >
-            <h2 style={{ fontSize: "24px", fontWeight: 800, marginBottom: "16px" }}>
-              Submit Match Result
-            </h2>
+        {/* SUBMIT SCORE */}
+        <section id="submit" className="flex justify-center">
+          <div className="bg-white text-slate-900 rounded-2xl shadow-xl p-6 w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4">Submit Match Result</h2>
 
-            <div
-              style={{
-                width: "100%",
-                border: "2px solid #cbd5e1",
-                borderRadius: "12px",
-                overflow: "hidden",
-              }}
-            >
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+            <div className="border-2 border-slate-300 rounded-xl overflow-hidden">
+              <table className="w-full text-sm">
                 <tbody>
-                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc", width: "30%" }}>
-                      Winning Team
-                    </td>
-                    <td style={{ padding: "12px" }}>
+                  <tr className="border-b-2 border-slate-300">
+                    <td className="p-3 font-semibold bg-slate-50 w-1/3">Winning Team</td>
+                    <td className="p-3">
                       <select
                         value={winner}
                         onChange={e => setWinner(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "8px",
-                          borderRadius: "8px",
-                          border: "1px solid #cbd5e1",
-                        }}
+                        className="w-full p-2 border rounded-lg"
                       >
                         <option>Select Winning Team</option>
                         {teams.map(team => (
@@ -231,40 +143,25 @@ export default function SummerGolfLeagueWebsite() {
                     </td>
                   </tr>
 
-                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc" }}>
-                      Winner Score
-                    </td>
-                    <td style={{ padding: "12px" }}>
+                  <tr className="border-b-2 border-slate-300">
+                    <td className="p-3 font-semibold bg-slate-50">Winner Score</td>
+                    <td className="p-3">
                       <input
                         type="number"
                         value={winnerScore}
                         onChange={e => setWinnerScore(e.target.value)}
-                        placeholder="Enter winner score"
-                        style={{
-                          width: "100%",
-                          padding: "8px",
-                          borderRadius: "8px",
-                          border: "1px solid #cbd5e1",
-                        }}
+                        className="w-full p-2 border rounded-lg"
                       />
                     </td>
                   </tr>
 
-                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc" }}>
-                      Opponent
-                    </td>
-                    <td style={{ padding: "12px" }}>
+                  <tr className="border-b-2 border-slate-300">
+                    <td className="p-3 font-semibold bg-slate-50">Opponent</td>
+                    <td className="p-3">
                       <select
                         value={opponent}
                         onChange={e => setOpponent(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "8px",
-                          borderRadius: "8px",
-                          border: "1px solid #cbd5e1",
-                        }}
+                        className="w-full p-2 border rounded-lg"
                       >
                         <option>Select Opponent</option>
                         {teams.map(team => (
@@ -274,22 +171,14 @@ export default function SummerGolfLeagueWebsite() {
                     </td>
                   </tr>
 
-                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "12px", fontWeight: 600, background: "#f8fafc" }}>
-                      Loser Score
-                    </td>
-                    <td style={{ padding: "12px" }}>
+                  <tr>
+                    <td className="p-3 font-semibold bg-slate-50">Loser Score</td>
+                    <td className="p-3">
                       <input
                         type="number"
                         value={loserScore}
                         onChange={e => setLoserScore(e.target.value)}
-                        placeholder="Enter loser score"
-                        style={{
-                          width: "100%",
-                          padding: "8px",
-                          borderRadius: "8px",
-                          border: "1px solid #cbd5e1",
-                        }}
+                        className="w-full p-2 border rounded-lg"
                       />
                     </td>
                   </tr>
@@ -299,17 +188,7 @@ export default function SummerGolfLeagueWebsite() {
 
             <button
               onClick={submitMatch}
-              style={{
-                marginTop: "16px",
-                width: "100%",
-                backgroundColor: "#065f46",
-                color: "white",
-                fontWeight: 600,
-                padding: "12px",
-                borderRadius: "12px",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className="w-full bg-green-800 hover:bg-green-900 text-white font-semibold py-3 rounded-xl mt-4 transition"
             >
               Upload Final Score
             </button>
@@ -317,83 +196,76 @@ export default function SummerGolfLeagueWebsite() {
         </section>
 
         {/* FULL-WIDTH BRACKET */}
-        <section
-          style={{
-            backgroundColor: "white",
-            color: "#0f172a",
-            borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-            padding: "24px",
-            width: "100%",
-          }}
-        >
-          <h2 style={{ fontSize: "24px", fontWeight: 800, marginBottom: "16px" }}>
-            Tournament Bracket
-          </h2>
+        <section className="bg-white text-slate-900 rounded-2xl shadow-xl p-6 w-full">
+          <h2 className="text-2xl font-bold mb-4">Tournament Bracket</h2>
 
-          <div
-            style={{
-              width: "100%",
-              border: "2px solid #cbd5e1",
-              borderRadius: "12px",
-              overflow: "hidden",
-            }}
-          >
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+          <div className="border-2 border-slate-300 rounded-xl overflow-hidden">
+            <table className="w-full text-sm">
               <tbody>
                 {/* Play-In */}
-                <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                  <td style={{ padding: "12px", fontWeight: 700 }}>Play‑In Round</td>
+                <tr className="bg-slate-50 border-b-2 border-slate-300">
+                  <td className="p-3 font-bold">Play‑In Round</td>
                   <td></td>
                 </tr>
 
-                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                <tr className="border-b-2 border-slate-300">
+                  <td className="p-3 font-semibold">
                     #{sorted.indexOf(seed3) + 1} {seed3.name}
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td className="p-3">
                     vs #{sorted.indexOf(seed6) + 1} {seed6.name}
                   </td>
                 </tr>
 
-                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                <tr className="border-b-2 border-slate-300">
+                  <td className="p-3 font-semibold">
                     #{sorted.indexOf(seed4) + 1} {seed4.name}
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td className="p-3">
                     vs #{sorted.indexOf(seed5) + 1} {seed5.name}
                   </td>
                 </tr>
 
                 {/* Semifinals */}
-                <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                  <td style={{ padding: "12px", fontWeight: 700 }}>Semifinals</td>
+                <tr className="bg-slate-50 border-b-2 border-slate-300">
+                  <td className="p-3 font-bold">Semifinals</td>
                   <td></td>
                 </tr>
 
-                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                <tr className="border-b-2 border-slate-300">
+                  <td className="p-3 font-semibold">
                     #{sorted.indexOf(seed1) + 1} {seed1.name}
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td className="p-3">
                     vs Winner of #{sorted.indexOf(seed4) + 1} / #{sorted.indexOf(seed5) + 1}
                   </td>
                 </tr>
 
-                <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                  <td style={{ padding: "12px", fontWeight: 600 }}>
+                <tr className="border-b-2 border-slate-300">
+                  <td className="p-3 font-semibold">
                     #{sorted.indexOf(seed2) + 1} {seed2.name}
                   </td>
-                  <td style={{ padding: "12px" }}>
+                  <td className="p-3">
                     vs Winner of #{sorted.indexOf(seed3) + 1} / #{sorted.indexOf(seed6) + 1}
                   </td>
                 </tr>
 
                 {/* Championship */}
-                <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                  <td style={{ padding: "12px", fontWeight: 700 }}>Championship</td>
+                <tr className="bg-slate-50 border-b-2 border-slate-300">
+                  <td className="p-3 font-bold">Championship</td>
                   <td></td>
                 </tr>
 
                 <tr>
-                  <td style={{ padding: "12px", font
+                  <td className="p-3 font-semibold">Winner</td>
+                  <td className="p-3">________________________</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  );
+}

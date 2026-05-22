@@ -159,21 +159,21 @@ export default function SummerGolfLeagueWebsite() {
 
           <div className="overflow-x-auto">
 
-            {/* ⭐ NEW FULL-WIDTH TABLE WITH EXTRA SPACING ⭐ */}
+            {/* ⭐ NEW FULL-WIDTH TABLE WITH CLEAR BORDERS + BIG SPACING ⭐ */}
             <table className="w-full border-collapse text-base">
-              <thead className="bg-slate-100 text-slate-700 uppercase text-xs tracking-wide border-b">
+              <thead className="bg-slate-100 text-slate-700 uppercase text-xs tracking-wide border-b-2">
                 <tr>
-                  <th className="px-8 py-4 text-left border-r w-20">Rank</th>
-                  <th className="px-8 py-4 text-left border-r w-64">Team</th>
-                  <th className="px-8 py-4 text-left border-r">Players</th>
+                  <th className="px-8 py-4 text-left border-r-2 w-20">Rank</th>
+                  <th className="px-8 py-4 text-left border-r-2 w-64">Team</th>
+                  <th className="px-8 py-4 text-left border-r-2">Players</th>
 
-                  {/* SPACER COLUMN */}
-                  <th className="px-16"></th>
+                  {/* BIG SPACER COLUMN */}
+                  <th className="px-24"></th>
 
-                  <th className="px-8 py-4 text-center border-r w-20">Wins</th>
-                  <th className="px-8 py-4 text-center border-r w-20">Losses</th>
-                  <th className="px-8 py-4 text-center border-r w-20">Draws</th>
-                  <th className="px-8 py-4 text-center border-r w-20">+/−</th>
+                  <th className="px-8 py-4 text-center border-r-2 w-20">Wins</th>
+                  <th className="px-8 py-4 text-center border-r-2 w-20">Losses</th>
+                  <th className="px-8 py-4 text-center border-r-2 w-20">Draws</th>
+                  <th className="px-8 py-4 text-center border-r-2 w-20">+/−</th>
                   <th className="px-8 py-4 text-center w-24">Points</th>
                 </tr>
               </thead>
@@ -184,28 +184,28 @@ export default function SummerGolfLeagueWebsite() {
                   .map((team, index) => (
                     <tr
                       key={team.name}
-                      className="border-b hover:bg-green-50 transition-colors"
+                      className="border-b-2 hover:bg-green-50 transition-colors"
                     >
-                      <td className="px-8 py-5 font-semibold border-r">#{index + 1}</td>
+                      <td className="px-8 py-6 font-semibold border-r-2">#{index + 1}</td>
 
-                      <td className="px-8 py-5 font-bold border-r">
+                      <td className="px-8 py-6 font-bold border-r-2">
                         {team.name}
                       </td>
 
-                      <td className="px-8 py-5 text-slate-600 border-r">
+                      <td className="px-8 py-6 text-slate-600 border-r-2">
                         {team.players.join(" & ")}
                       </td>
 
-                      {/* SPACER */}
-                      <td className="px-16"></td>
+                      {/* BIG SPACER */}
+                      <td className="px-24"></td>
 
-                      <td className="px-8 py-5 text-center border-r">{team.wins}</td>
-                      <td className="px-8 py-5 text-center border-r">{team.losses}</td>
-                      <td className="px-8 py-5 text-center border-r">{team.draws}</td>
-                      <td className="px-8 py-5 text-center font-semibold border-r">
+                      <td className="px-8 py-6 text-center border-r-2">{team.wins}</td>
+                      <td className="px-8 py-6 text-center border-r-2">{team.losses}</td>
+                      <td className="px-8 py-6 text-center border-r-2">{team.draws}</td>
+                      <td className="px-8 py-6 text-center font-semibold border-r-2">
                         {team.strokeDiff}
                       </td>
-                      <td className="px-8 py-5 text-center font-semibold text-green-700">
+                      <td className="px-8 py-6 text-center font-semibold text-green-700">
                         {team.points}
                       </td>
                     </tr>

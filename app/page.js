@@ -21,28 +21,34 @@ export default function SummerGolfLeagueWebsite() {
 
     const w = parseInt(winnerScore);
     const l = parseInt(loserScore);
+    if (isNaN(w) || isNaN(l)) return;
 
-    const diff = w - l; // positive for winner, negative for loser
+    // Golf logic: lower score wins
+    // differential = loserScore - winnerScore (positive for winner)
+    const diff = l - w;
 
     setTeams(prev =>
       prev.map(team => {
-        if (team.name === winner && w > l) {
+        // winner (lower score)
+        if (team.name === winner && w < l) {
           return {
             ...team,
             wins: team.wins + 1,
             points: team.points + 3,
-            strokeDiff: team.strokeDiff + diff,
+            strokeDiff: team.strokeDiff + diff, // positive
           };
         }
 
-        if (team.name === opponent && w > l) {
+        // loser (higher score)
+        if (team.name === opponent && w < l) {
           return {
             ...team,
             losses: team.losses + 1,
-            strokeDiff: team.strokeDiff - diff,
+            strokeDiff: team.strokeDiff - diff, // negative
           };
         }
 
+        // draw (same score)
         if (w === l && (team.name === winner || team.name === opponent)) {
           return {
             ...team,
@@ -102,7 +108,7 @@ export default function SummerGolfLeagueWebsite() {
             <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold">LIVE</div>
           </div>
 
-          {/* ⭐ SHRUNK + CLEAN INLINE‑CSS TABLE ⭐ */}
+          {/* TABLE STYLED LIKE YOUR SCREENSHOT */}
           <div style={{ width: "100%", overflowX: "auto" }}>
             <table
               style={{
@@ -184,22 +190,45 @@ export default function SummerGolfLeagueWebsite() {
             <h2 className="text-2xl font-bold mb-4">Submit Match Result</h2>
 
             <div className="space-y-4 text-sm">
-              <select className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black" value={winner} onChange={e => setWinner(e.target.value)}>
+              <select
+                className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black"
+                value={winner}
+                onChange={e => setWinner(e.target.value)}
+              >
                 <option>Select Winning Team</option>
                 {teams.map(team => <option key={team.name}>{team.name}</option>)}
               </select>
 
               <div className="grid grid-cols-2 gap-4">
-                <input type="number" placeholder="Winner Score" className="border border-slate-300 rounded-xl px-4 py-3 text-black" value={winnerScore} onChange={e => setWinnerScore(e.target.value)} />
-                <input type="number" placeholder="Loser Score" className="border border-slate-300 rounded-xl px-4 py-3 text-black" value={loserScore} onChange={e => setLoserScore(e.target.value)} />
+                <input
+                  type="number"
+                  placeholder="Winner Score"
+                  className="border border-slate-300 rounded-xl px-4 py-3 text-black"
+                  value={winnerScore}
+                  onChange={e => setWinnerScore(e.target.value)}
+                />
+                <input
+                  type="number"
+                  placeholder="Loser Score"
+                  className="border border-slate-300 rounded-xl px-4 py-3 text-black"
+                  value={loserScore}
+                  onChange={e => setLoserScore(e.target.value)}
+                />
               </div>
 
-              <select className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black" value={opponent} onChange={e => setOpponent(e.target.value)}>
+              <select
+                className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black"
+                value={opponent}
+                onChange={e => setOpponent(e.target.value)}
+              >
                 <option>Select Opponent</option>
                 {teams.map(team => <option key={team.name}>{team.name}</option>)}
               </select>
 
-              <button onClick={submitMatch} className="w-full bg-green-800 hover:bg-green-900 text-white font-semibold py-3 rounded-xl text-sm transition-colors">
+              <button
+                onClick={submitMatch}
+                className="w-full bg-green-800 hover:bg-green-900 text-white font-semibold py-3 rounded-xl text-sm transition-colors"
+              >
                 Upload Final Score
               </button>
             </div>

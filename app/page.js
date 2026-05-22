@@ -145,10 +145,10 @@ export default function SummerGolfLeagueWebsite() {
         </section>
 
         {/* 50/50 SPLIT SECTION */}
-        <section id="submit" className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <section id="submit" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
           {/* LEFT HALF — UPLOAD SCORE TABLE */}
-          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg flex justify-center">
+          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg flex justify-center flex-col h-full">
             <div style={{ width: "100%", maxWidth: "420px" }}>
               <h2 className="text-2xl font-bold mb-4">Submit Match Result</h2>
 
@@ -261,7 +261,7 @@ export default function SummerGolfLeagueWebsite() {
           </div>
 
           {/* RIGHT HALF — BRACKET TABLE */}
-          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg flex justify-center">
+          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg flex justify-center flex-col h-full">
             <div style={{ width: "100%", maxWidth: "420px" }}>
               <h2 className="text-2xl font-bold mb-4">Tournament Bracket</h2>
 

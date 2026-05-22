@@ -28,7 +28,6 @@ export default function SummerGolfLeagueWebsite() {
 
     setTeams(prev =>
       prev.map(team => {
-        // WINNER (lower score)
         if (team.name === winner && w < l) {
           return {
             ...team,
@@ -38,7 +37,6 @@ export default function SummerGolfLeagueWebsite() {
           };
         }
 
-        // LOSER (higher score)
         if (team.name === opponent && w < l) {
           return {
             ...team,
@@ -47,7 +45,6 @@ export default function SummerGolfLeagueWebsite() {
           };
         }
 
-        // DRAW
         if (w === l && (team.name === winner || team.name === opponent)) {
           return {
             ...team,
@@ -148,11 +145,11 @@ export default function SummerGolfLeagueWebsite() {
           </div>
         </section>
 
-        {/* TWO‑COLUMN LAYOUT */}
-        <section id="submit" className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        {/* 50/50 SPLIT SECTION */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
           {/* LEFT HALF — UPLOAD SCORE TABLE */}
-          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg">
+          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg" style={{ width: "100%", maxWidth: "100%" }}>
 
             <h2 className="text-2xl font-bold mb-4">Submit Match Result</h2>
 
@@ -166,12 +163,12 @@ export default function SummerGolfLeagueWebsite() {
                 <tbody>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600", width: "30%", background: "#f8fafc" }}>Winning Team</td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px", fontWeight: "600", width: "30%", background: "#f8fafc" }}>Winning Team</td>
+                    <td style={{ padding: "12px" }}>
                       <select
                         value={winner}
                         onChange={(e) => setWinner(e.target.value)}
-                        style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                        style={{ width: "100%", padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
                       >
                         <option>Select Winning Team</option>
                         {teams.map(team => <option key={team.name}>{team.name}</option>)}
@@ -180,25 +177,25 @@ export default function SummerGolfLeagueWebsite() {
                   </tr>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600", background: "#f8fafc" }}>Winner Score</td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px", fontWeight: "600", background: "#f8fafc" }}>Winner Score</td>
+                    <td style={{ padding: "12px" }}>
                       <input
                         type="number"
                         value={winnerScore}
                         onChange={(e) => setWinnerScore(e.target.value)}
                         placeholder="Enter winner score"
-                        style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                        style={{ width: "100%", padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
                       />
                     </td>
                   </tr>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600", background: "#f8fafc" }}>Opponent</td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px", fontWeight: "600", background: "#f8fafc" }}>Opponent</td>
+                    <td style={{ padding: "12px" }}>
                       <select
                         value={opponent}
                         onChange={(e) => setOpponent(e.target.value)}
-                        style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                        style={{ width: "100%", padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
                       >
                         <option>Select Opponent</option>
                         {teams.map(team => <option key={team.name}>{team.name}</option>)}
@@ -207,14 +204,14 @@ export default function SummerGolfLeagueWebsite() {
                   </tr>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600", background: "#f8fafc" }}>Loser Score</td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px", fontWeight: "600", background: "#f8fafc" }}>Loser Score</td>
+                    <td style={{ padding: "12px" }}>
                       <input
                         type="number"
                         value={loserScore}
                         onChange={(e) => setLoserScore(e.target.value)}
                         placeholder="Enter loser score"
-                        style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                        style={{ width: "100%", padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
                       />
                     </td>
                   </tr>
@@ -230,13 +227,10 @@ export default function SummerGolfLeagueWebsite() {
               Upload Final Score
             </button>
 
-            <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-4 text-xs text-green-800">
-              Example: Banana Hammocks def. Shock Tops 36–39
-            </div>
           </div>
 
           {/* RIGHT HALF — BRACKET TABLE */}
-          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg">
+          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg" style={{ width: "100%", maxWidth: "100%" }}>
 
             <h2 className="text-2xl font-bold mb-4">Tournament Bracket</h2>
 
@@ -251,61 +245,61 @@ export default function SummerGolfLeagueWebsite() {
 
                   {/* PLAY-IN ROUND */}
                   <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "700" }}>Play‑In Round</td>
+                    <td style={{ padding: "12px", fontWeight: "700" }}>Play‑In Round</td>
                     <td></td>
                   </tr>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                    <td style={{ padding: "12px", fontWeight: "600" }}>
                       #{sorted.indexOf(seed3) + 1} {seed3.name}
                     </td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px" }}>
                       vs #{sorted.indexOf(seed6) + 1} {seed6.name}
                     </td>
                   </tr>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                    <td style={{ padding: "12px", fontWeight: "600" }}>
                       #{sorted.indexOf(seed4) + 1} {seed4.name}
                     </td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px" }}>
                       vs #{sorted.indexOf(seed5) + 1} {seed5.name}
                     </td>
                   </tr>
 
                   {/* SEMIFINALS */}
                   <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "700" }}>Semifinals</td>
+                    <td style={{ padding: "12px", fontWeight: "700" }}>Semifinals</td>
                     <td></td>
                   </tr>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                    <td style={{ padding: "12px", fontWeight: "600" }}>
                       #{sorted.indexOf(seed1) + 1} {seed1.name}
                     </td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px" }}>
                       vs Winner of #{sorted.indexOf(seed4) + 1} / #{sorted.indexOf(seed5) + 1}
                     </td>
                   </tr>
 
                   <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                    <td style={{ padding: "12px", fontWeight: "600" }}>
                       #{sorted.indexOf(seed2) + 1} {seed2.name}
                     </td>
-                    <td style={{ padding: "14px" }}>
+                    <td style={{ padding: "12px" }}>
                       vs Winner of #{sorted.indexOf(seed3) + 1} / #{sorted.indexOf(seed6) + 1}
                     </td>
                   </tr>
 
                   {/* CHAMPIONSHIP */}
                   <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
-                    <td style={{ padding: "14px", fontWeight: "700" }}>Championship</td>
+                    <td style={{ padding: "12px", fontWeight: "700" }}>Championship</td>
                     <td></td>
                   </tr>
 
                   <tr>
-                    <td style={{ padding: "14px", fontWeight: "600" }}>Winner</td>
-                    <td style={{ padding: "14px" }}>________________________</td>
+                    <td style={{ padding: "12px", fontWeight: "600" }}>Winner</td>
+                    <td style={{ padding: "12px" }}>________________________</td>
                   </tr>
 
                 </tbody>

@@ -158,16 +158,17 @@ export default function SummerGolfLeagueWebsite() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-600 uppercase tracking-wide">
+            {/* ⭐ NEW TABLE WITH BORDERS ⭐ */}
+            <table className="w-full text-sm border-collapse">
+              <thead className="bg-slate-100 text-slate-700 uppercase text-xs tracking-wide border-b">
                 <tr>
-                  <th className="text-left px-6 py-3 w-16">Rank</th>
-                  <th className="text-left px-4 py-3 w-48">Team</th>
-                  <th className="text-left px-4 py-3">Players</th>
-                  <th className="text-center px-3 py-3 w-16">Wins</th>
-                  <th className="text-center px-3 py-3 w-16">Losses</th>
-                  <th className="text-center px-3 py-3 w-16">+/−</th>
-                  <th className="text-center px-3 py-3 w-20">Points</th>
+                  <th className="px-6 py-3 text-left border-r">Rank</th>
+                  <th className="px-6 py-3 text-left border-r">Team</th>
+                  <th className="px-6 py-3 text-left border-r">Players</th>
+                  <th className="px-4 py-3 text-center border-r">Wins</th>
+                  <th className="px-4 py-3 text-center border-r">Losses</th>
+                  <th className="px-4 py-3 text-center border-r">+/−</th>
+                  <th className="px-4 py-3 text-center">Points</th>
                 </tr>
               </thead>
 
@@ -177,19 +178,24 @@ export default function SummerGolfLeagueWebsite() {
                   .map((team, index) => (
                     <tr
                       key={team.name}
-                      className="border-t hover:bg-green-50 transition-colors"
+                      className="border-b hover:bg-green-50 transition-colors"
                     >
-                      <td className="px-6 py-3 font-semibold">#{index + 1}</td>
-                      <td className="px-4 py-3 font-semibold">{team.name}</td>
-                      <td className="px-4 py-3 text-slate-600">
+                      <td className="px-6 py-4 font-semibold border-r">#{index + 1}</td>
+
+                      <td className="px-6 py-4 font-bold border-r">
+                        {team.name}
+                      </td>
+
+                      <td className="px-6 py-4 text-slate-600 border-r">
                         {team.players.join(" & ")}
                       </td>
-                      <td className="px-3 py-3 text-center">{team.wins}</td>
-                      <td className="px-3 py-3 text-center">{team.losses}</td>
-                      <td className="px-3 py-3 text-center font-semibold">
+
+                      <td className="px-4 py-4 text-center border-r">{team.wins}</td>
+                      <td className="px-4 py-4 text-center border-r">{team.losses}</td>
+                      <td className="px-4 py-4 text-center font-semibold border-r">
                         {team.strokeDiff}
                       </td>
-                      <td className="px-3 py-3 text-center font-semibold text-green-700">
+                      <td className="px-4 py-4 text-center font-semibold text-green-700">
                         {team.points}
                       </td>
                     </tr>

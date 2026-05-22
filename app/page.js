@@ -1,7 +1,7 @@
 "use client";
-
+ 
 import { useState } from "react";
-
+ 
 export default function SummerGolfLeagueWebsite() {
   const [teams, setTeams] = useState([
     {
@@ -59,21 +59,21 @@ export default function SummerGolfLeagueWebsite() {
       points: 0,
     },
   ]);
-
+ 
   const [winner, setWinner] = useState("");
   const [opponent, setOpponent] = useState("");
   const [winnerScore, setWinnerScore] = useState("");
   const [loserScore, setLoserScore] = useState("");
-
+ 
   function submitMatch() {
     if (!winner || !opponent || winner === opponent) return;
-
+ 
     const w = parseInt(winnerScore);
     const l = parseInt(loserScore);
     if (isNaN(w) || isNaN(l)) return;
-
+ 
     const diff = l - w;
-
+ 
     setTeams((prev) =>
       prev.map((team) => {
         if (team.name === winner && w < l) {
@@ -101,22 +101,22 @@ export default function SummerGolfLeagueWebsite() {
         return team;
       })
     );
-
+ 
     setWinner("");
     setOpponent("");
     setWinnerScore("");
     setLoserScore("");
   }
-
+ 
   const sorted = [...teams].sort((a, b) => b.points - a.points);
-
+ 
   const seed1 = sorted[0];
   const seed2 = sorted[1];
   const seed3 = sorted[2];
   const seed4 = sorted[3];
   const seed5 = sorted[4];
   const seed6 = sorted[5];
-
+ 
   return (
     <div
       style={{
@@ -154,7 +154,7 @@ export default function SummerGolfLeagueWebsite() {
           >
             2026 Summer Golf League
           </h1>
-
+ 
           <div
             style={{
               width: "260px",
@@ -165,7 +165,7 @@ export default function SummerGolfLeagueWebsite() {
               borderRadius: "999px",
             }}
           ></div>
-
+ 
           <nav
             style={{
               display: "flex",
@@ -199,7 +199,7 @@ export default function SummerGolfLeagueWebsite() {
           </nav>
         </div>
       </header>
-
+ 
       {/* MAIN CONTENT */}
       <main
         style={{
@@ -234,7 +234,7 @@ export default function SummerGolfLeagueWebsite() {
             <h2 style={{ fontSize: "22px", fontWeight: 800 }}>
               Live Standings
             </h2>
-
+ 
             <div
               style={{
                 backgroundColor: "#dcfce7",
@@ -248,7 +248,7 @@ export default function SummerGolfLeagueWebsite() {
               LIVE
             </div>
           </div>
-
+ 
           <div style={{ width: "100%", overflowX: "auto" }}>
             <table
               style={{
@@ -324,7 +324,7 @@ export default function SummerGolfLeagueWebsite() {
                   <th style={{ padding: "10px" }}>Points</th>
                 </tr>
               </thead>
-
+ 
               <tbody>
                 {sorted.map((team, index) => (
                   <tr
@@ -412,7 +412,7 @@ export default function SummerGolfLeagueWebsite() {
             </table>
           </div>
         </section>
-
+ 
         {/* TEAMS SECTION (Spot 1) */}
         <section
           id="teams"
@@ -435,7 +435,7 @@ export default function SummerGolfLeagueWebsite() {
           >
             Teams
           </h2>
-
+ 
           <div
             style={{
               display: "flex",
@@ -447,27 +447,27 @@ export default function SummerGolfLeagueWebsite() {
             {[
               {
                 name: "Banana Hammocks",
-                logo: "/team-logos/Banana Hammocks Logo.png",
+                logo: "/team-logos/Banana-Hammocks-Logo.png",
               },
               {
                 name: "Smoove Operators",
-                logo: "/team-logos/Smoove Operators Logo.png",
+                logo: "/team-logos/Smoove-Operators-Logo.png",
               },
               {
                 name: "Brown Nosers",
-                logo: "/team-logos/The Brown Nosers Logo.png",
+                logo: "/team-logos/The-Brown-Nosers-Logo.png",
               },
               {
                 name: "The Nursery",
-                logo: "/team-logos/The Nursery Logo.png",
+                logo: "/team-logos/The-Nursery-Logo.png",
               },
               {
                 name: "Greenside Gamblers",
-                logo: "/team-logos/Greenside Gamblers Logo.png",
+                logo: "/team-logos/Greenside-Gamblers-Logo.png",
               },
               {
                 name: "Shock Tops",
-                logo: "/team-logos/Shock Tops Logo.png",
+                logo: "/team-logos/Shock-Tops-Logo.png",
               },
             ].map((team) => (
               <div
@@ -500,7 +500,7 @@ export default function SummerGolfLeagueWebsite() {
             ))}
           </div>
         </section>
-
+ 
         {/* SUBMIT + BRACKET SECTION */}
         <section
           id="submit"
@@ -541,7 +541,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Submit Match Result
               </h2>
-
+ 
               <div
                 style={{
                   width: "100%",
@@ -587,7 +587,7 @@ export default function SummerGolfLeagueWebsite() {
                         </select>
                       </td>
                     </tr>
-
+ 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -613,7 +613,7 @@ export default function SummerGolfLeagueWebsite() {
                         />
                       </td>
                     </tr>
-
+ 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -642,7 +642,7 @@ export default function SummerGolfLeagueWebsite() {
                         </select>
                       </td>
                     </tr>
-
+ 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -671,7 +671,7 @@ export default function SummerGolfLeagueWebsite() {
                   </tbody>
                 </table>
               </div>
-
+ 
               <button
                 onClick={submitMatch}
                 style={{
@@ -689,7 +689,7 @@ export default function SummerGolfLeagueWebsite() {
                 Upload Final Score
               </button>
             </div>
-
+ 
             {/* RIGHT CARD — Bracket */}
             <div
               style={{
@@ -713,7 +713,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Tournament Bracket
               </h2>
-
+ 
               <div
                 style={{
                   width: "100%",
@@ -747,7 +747,7 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td></td>
                     </tr>
-
+ 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -761,7 +761,7 @@ export default function SummerGolfLeagueWebsite() {
                         vs #{sorted.indexOf(seed6) + 1} {seed6.name}
                       </td>
                     </tr>
-
+ 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -775,7 +775,7 @@ export default function SummerGolfLeagueWebsite() {
                         vs #{sorted.indexOf(seed5) + 1} {seed5.name}
                       </td>
                     </tr>
-
+ 
                     {/* Semifinals */}
                     <tr
                       style={{
@@ -793,7 +793,7 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td></td>
                     </tr>
-
+ 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -808,7 +808,7 @@ export default function SummerGolfLeagueWebsite() {
                         #{sorted.indexOf(seed5) + 1}
                       </td>
                     </tr>
-
+ 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -823,7 +823,7 @@ export default function SummerGolfLeagueWebsite() {
                         #{sorted.indexOf(seed6) + 1}
                       </td>
                     </tr>
-
+ 
                     {/* Championship */}
                     <tr
                       style={{
@@ -841,7 +841,7 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td></td>
                     </tr>
-
+ 
                     <tr>
                       <td
                         style={{
@@ -861,7 +861,7 @@ export default function SummerGolfLeagueWebsite() {
             </div>
           </div>
         </section>
-
+ 
         {/* SCHEDULE AT THE BOTTOM */}
         <section
           id="schedule"
@@ -885,7 +885,7 @@ export default function SummerGolfLeagueWebsite() {
           >
             2026 Regular Season Schedule
           </h2>
-
+ 
           <div
             style={{
               display: "flex",
@@ -914,7 +914,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>Greenside Gamblers vs Shock Tops</li>
               </ul>
             </div>
-
+ 
             <div>
               <h3
                 style={{
@@ -936,7 +936,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>Brown Nosers vs Shock Tops</li>
               </ul>
             </div>
-
+ 
             <div>
               <h3
                 style={{
@@ -958,7 +958,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>The Nursery vs Greenside Gamblers</li>
               </ul>
             </div>
-
+ 
             <div>
               <h3
                 style={{
@@ -980,7 +980,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>Smoove Operators vs Shock Tops</li>
               </ul>
             </div>
-
+ 
             <div>
               <h3
                 style={{
@@ -1008,3 +1008,4 @@ export default function SummerGolfLeagueWebsite() {
     </div>
   );
 }
+ 

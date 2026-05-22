@@ -3,60 +3,12 @@ import { useState } from "react";
 
 export default function SummerGolfLeagueWebsite() {
   const [teams, setTeams] = useState([
-    {
-      name: "Banana Hammocks",
-      players: ["Tyler Mull", "Marco Morrison"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Smoove Operators",
-      players: ["Paul Carr", "Grant Dzierwa"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Brown Nosers",
-      players: ["Ben Seals", "Austin Radwanski"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "The Nursery",
-      players: ["Zach Kemmer", "Tommy Ling"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Greenside Gamblers",
-      players: ["Max Walton", "Jackson Fitzgerald"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Shock Tops",
-      players: ["Jack Behnfeldt", "Cole Keefer"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
+    { name: "Banana Hammocks", players: ["Tyler Mull", "Marco Morrison"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
+    { name: "Smoove Operators", players: ["Paul Carr", "Grant Dzierwa"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
+    { name: "Brown Nosers", players: ["Ben Seals", "Austin Radwanski"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
+    { name: "The Nursery", players: ["Zach Kemmer", "Tommy Ling"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
+    { name: "Greenside Gamblers", players: ["Max Walton", "Jackson Fitzgerald"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
+    { name: "Shock Tops", players: ["Jack Behnfeldt", "Cole Keefer"], wins: 0, losses: 0, draws: 0, strokeDiff: 0, points: 0 },
   ]);
 
   const [winner, setWinner] = useState("");
@@ -70,35 +22,17 @@ export default function SummerGolfLeagueWebsite() {
     const wScore = parseInt(winnerScore);
     const lScore = parseInt(loserScore);
 
-    setTeams((prev) =>
-      prev.map((team) => {
+    setTeams(prev =>
+      prev.map(team => {
         if (team.name === winner && wScore > lScore) {
-          return {
-            ...team,
-            wins: team.wins + 1,
-            points: team.points + 3,
-            strokeDiff: team.strokeDiff + (lScore - wScore),
-          };
+          return { ...team, wins: team.wins + 1, points: team.points + 3, strokeDiff: team.strokeDiff + (lScore - wScore) };
         }
-
         if (team.name === opponent && wScore > lScore) {
-          return {
-            ...team,
-            losses: team.losses + 1,
-            strokeDiff: team.strokeDiff + (wScore - lScore),
-          };
+          return { ...team, losses: team.losses + 1, strokeDiff: team.strokeDiff + (wScore - lScore) };
         }
-
-        if (wScore === lScore) {
-          if (team.name === winner || team.name === opponent) {
-            return {
-              ...team,
-              draws: team.draws + 1,
-              points: team.points + 1,
-            };
-          }
+        if (wScore === lScore && (team.name === winner || team.name === opponent)) {
+          return { ...team, draws: team.draws + 1, points: team.points + 1 };
         }
-
         return team;
       })
     );
@@ -140,72 +74,81 @@ export default function SummerGolfLeagueWebsite() {
         </header>
 
         {/* STANDINGS */}
-        <section
-          id="standings"
-          className="bg-white text-slate-900 rounded-2xl shadow-lg overflow-hidden w-full"
-        >
+        <section id="standings" className="bg-white text-slate-900 rounded-2xl shadow-lg overflow-hidden w-full">
+
           <div className="px-6 py-4 border-b bg-slate-100 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-tight">Live Standings</h2>
-              <p className="text-slate-500 text-xs mt-1">
-                Updated after each submitted score
-              </p>
+              <p className="text-slate-500 text-xs mt-1">Updated after each submitted score</p>
             </div>
-
-            <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold">
-              LIVE
-            </div>
+            <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold">LIVE</div>
           </div>
 
-          <div className="overflow-x-auto">
-
-            {/* ⭐ NEW THICK‑BORDER, FULL‑WIDTH, SPACED TABLE ⭐ */}
-            <table className="w-full text-lg border-collapse divide-y-4 divide-slate-300">
-              <thead className="bg-slate-100 text-slate-700 uppercase tracking-wide border-b-4 border-slate-300">
-                <tr className="divide-x-4 divide-slate-300">
-                  <th className="px-8 py-6 text-left w-20">Rank</th>
-                  <th className="px-8 py-6 text-left w-64">Team</th>
-                  <th className="px-8 py-6 text-left">Players</th>
+          {/* ⭐ INLINE‑CSS TABLE — THIS WILL FINALLY LOOK DIFFERENT ⭐ */}
+          <div style={{ width: "100%", overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: "18px",
+              }}
+            >
+              <thead>
+                <tr style={{ background: "#f1f5f9", borderBottom: "4px solid #cbd5e1" }}>
+                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Rank</th>
+                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Team</th>
+                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Players</th>
 
                   {/* HUGE SPACER */}
-                  <th className="px-28 py-6"></th>
+                  <th style={{ padding: "20px 120px" }}></th>
 
-                  <th className="px-8 py-6 text-center w-20">Wins</th>
-                  <th className="px-8 py-6 text-center w-20">Losses</th>
-                  <th className="px-8 py-6 text-center w-20">Draws</th>
-                  <th className="px-8 py-6 text-center w-20">+/−</th>
-                  <th className="px-8 py-6 text-center w-24">Points</th>
+                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Wins</th>
+                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Losses</th>
+                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Draws</th>
+                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>+/−</th>
+                  <th style={{ padding: "20px" }}>Points</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y-4 divide-slate-300">
+              <tbody>
                 {teams
                   .sort((a, b) => b.points - a.points)
                   .map((team, index) => (
                     <tr
                       key={team.name}
-                      className="divide-x-4 divide-slate-300 hover:bg-green-50 transition-colors"
+                      style={{
+                        borderBottom: "4px solid #cbd5e1",
+                        background: "#ffffff",
+                      }}
                     >
-                      <td className="px-8 py-8 font-semibold">#{index + 1}</td>
+                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", fontWeight: "600" }}>
+                        #{index + 1}
+                      </td>
 
-                      <td className="px-8 py-8 font-bold">
+                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", fontWeight: "700" }}>
                         {team.name}
                       </td>
 
-                      <td className="px-8 py-8 text-slate-600">
+                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", color: "#475569" }}>
                         {team.players.join(" & ")}
                       </td>
 
                       {/* HUGE SPACER */}
-                      <td className="px-28 py-8"></td>
+                      <td style={{ padding: "28px 120px" }}></td>
 
-                      <td className="px-8 py-8 text-center">{team.wins}</td>
-                      <td className="px-8 py-8 text-center">{team.losses}</td>
-                      <td className="px-8 py-8 text-center">{team.draws}</td>
-                      <td className="px-8 py-8 text-center font-semibold">
+                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center" }}>
+                        {team.wins}
+                      </td>
+                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center" }}>
+                        {team.losses}
+                      </td>
+                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center" }}>
+                        {team.draws}
+                      </td>
+                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center", fontWeight: "600" }}>
                         {team.strokeDiff}
                       </td>
-                      <td className="px-8 py-8 text-center font-semibold text-green-700">
+                      <td style={{ padding: "28px", textAlign: "center", fontWeight: "700", color: "#166534" }}>
                         {team.points}
                       </td>
                     </tr>
@@ -216,59 +159,29 @@ export default function SummerGolfLeagueWebsite() {
         </section>
 
         {/* SUBMIT + BRACKET */}
-        <section
-          id="submit"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
-        >
+        <section id="submit" className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
           {/* SUBMIT SCORE */}
           <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Submit Match Result</h2>
 
             <div className="space-y-4 text-sm">
-              <select
-                className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black"
-                value={winner}
-                onChange={(e) => setWinner(e.target.value)}
-              >
+              <select className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black" value={winner} onChange={e => setWinner(e.target.value)}>
                 <option>Select Winning Team</option>
-                {teams.map((team) => (
-                  <option key={team.name}>{team.name}</option>
-                ))}
+                {teams.map(team => <option key={team.name}>{team.name}</option>)}
               </select>
 
               <div className="grid grid-cols-2 gap-4">
-                <input
-                  type="number"
-                  placeholder="Winner Score"
-                  className="border border-slate-300 rounded-xl px-4 py-3 text-black"
-                  value={winnerScore}
-                  onChange={(e) => setWinnerScore(e.target.value)}
-                />
-
-                <input
-                  type="number"
-                  placeholder="Loser Score"
-                  className="border border-slate-300 rounded-xl px-4 py-3 text-black"
-                  value={loserScore}
-                  onChange={(e) => setLoserScore(e.target.value)}
-                />
+                <input type="number" placeholder="Winner Score" className="border border-slate-300 rounded-xl px-4 py-3 text-black" value={winnerScore} onChange={e => setWinnerScore(e.target.value)} />
+                <input type="number" placeholder="Loser Score" className="border border-slate-300 rounded-xl px-4 py-3 text-black" value={loserScore} onChange={e => setLoserScore(e.target.value)} />
               </div>
 
-              <select
-                className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black"
-                value={opponent}
-                onChange={(e) => setOpponent(e.target.value)}
-              >
+              <select className="w-full border border-slate-300 rounded-xl px-4 py-3 text-black" value={opponent} onChange={e => setOpponent(e.target.value)}>
                 <option>Select Opponent</option>
-                {teams.map((team) => (
-                  <option key={team.name}>{team.name}</option>
-                ))}
+                {teams.map(team => <option key={team.name}>{team.name}</option>)}
               </select>
 
-              <button
-                onClick={submitMatch}
-                className="w-full bg-green-800 hover:bg-green-900 text-white font-semibold py-3 rounded-xl text-sm transition-colors"
-              >
+              <button onClick={submitMatch} className="w-full bg-green-800 hover:bg-green-900 text-white font-semibold py-3 rounded-xl text-sm transition-colors">
                 Upload Final Score
               </button>
             </div>
@@ -278,47 +191,30 @@ export default function SummerGolfLeagueWebsite() {
             </div>
           </div>
 
-          {/* EMPTY BRACKET */}
+          {/* BRACKET */}
           <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Live Championship Bracket</h2>
 
             <div className="space-y-6 text-sm">
 
-              {/* PLAY-IN ROUND */}
               <div>
-                <h3 className="text-base font-bold mb-2 text-green-700">
-                  Play-In Round
-                </h3>
+                <h3 className="text-base font-bold mb-2 text-green-700">Play-In Round</h3>
                 <div className="space-y-2">
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">
-                    #3 __________________ vs #6 __________________
-                  </div>
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">
-                    #4 __________________ vs #5 __________________
-                  </div>
+                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#3 __________________ vs #6 __________________</div>
+                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#4 __________________ vs #5 __________________</div>
                 </div>
               </div>
 
-              {/* SEMIFINALS */}
               <div>
-                <h3 className="text-base font-bold mb-2 text-green-700">
-                  Semifinals
-                </h3>
+                <h3 className="text-base font-bold mb-2 text-green-700">Semifinals</h3>
                 <div className="space-y-2">
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">
-                    #1 __________________ vs __________________
-                  </div>
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">
-                    #2 __________________ vs __________________
-                  </div>
+                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#1 __________________ vs __________________</div>
+                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#2 __________________ vs __________________</div>
                 </div>
               </div>
 
-              {/* CHAMPIONSHIP */}
               <div>
-                <h3 className="text-base font-bold mb-2 text-green-700">
-                  Championship
-                </h3>
+                <h3 className="text-base font-bold mb-2 text-green-700">Championship</h3>
                 <div className="bg-slate-100 p-4 rounded-lg border text-center">
                   <p className="text-sm font-semibold">__________________</p>
                 </div>
@@ -326,6 +222,7 @@ export default function SummerGolfLeagueWebsite() {
 
             </div>
           </div>
+
         </section>
       </div>
     </div>

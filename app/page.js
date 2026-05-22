@@ -34,7 +34,7 @@ export default function SummerGolfLeagueWebsite() {
             ...team,
             wins: team.wins + 1,
             points: team.points + 3,
-            strokeDiff: team.strokeDiff + diff, // positive
+            strokeDiff: team.strokeDiff + diff,
           };
         }
 
@@ -43,7 +43,7 @@ export default function SummerGolfLeagueWebsite() {
           return {
             ...team,
             losses: team.losses + 1,
-            strokeDiff: team.strokeDiff - diff, // negative
+            strokeDiff: team.strokeDiff - diff,
           };
         }
 
@@ -66,6 +66,16 @@ export default function SummerGolfLeagueWebsite() {
     setLoserScore("");
   }
 
+  // SORT TEAMS FOR BRACKET SEEDING
+  const sorted = [...teams].sort((a, b) => b.points - a.points);
+
+  const seed1 = sorted[0];
+  const seed2 = sorted[1];
+  const seed3 = sorted[2];
+  const seed4 = sorted[3];
+  const seed5 = sorted[4];
+  const seed6 = sorted[5];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-950 via-green-900 to-green-800 text-white">
 
@@ -78,7 +88,6 @@ export default function SummerGolfLeagueWebsite() {
           <div className="flex gap-6 ml-auto">
             <a href="#" className="hover:text-green-300">Home</a>
             <a href="#standings" className="hover:text-green-300">Standings</a>
-            <a href="#schedule" className="hover:text-green-300">Schedule</a>
             <a href="#submit" className="hover:text-green-300">Submit Score</a>
           </div>
         </div>
@@ -96,18 +105,14 @@ export default function SummerGolfLeagueWebsite() {
           </p>
         </header>
 
-        {/* STANDINGS */}
+        {/* STANDINGS TABLE */}
         <section id="standings" className="bg-white text-slate-900 rounded-2xl shadow-lg overflow-hidden w-full">
 
           <div className="px-6 py-4 border-b bg-slate-100 flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">Live Standings</h2>
-              <p className="text-slate-500 text-xs mt-1">Updated after each submitted score</p>
-            </div>
+            <h2 className="text-2xl font-bold tracking-tight">Live Standings</h2>
             <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold">LIVE</div>
           </div>
 
-          {/* STANDINGS TABLE */}
           <div style={{ width: "100%", overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
               <thead>
@@ -125,29 +130,28 @@ export default function SummerGolfLeagueWebsite() {
               </thead>
 
               <tbody>
-                {teams
-                  .sort((a, b) => b.points - a.points)
-                  .map((team, index) => (
-                    <tr key={team.name} style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: "600" }}>#{index + 1}</td>
-                      <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: "700" }}>{team.name}</td>
-                      <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", color: "#475569" }}>{team.players.join(" & ")}</td>
-                      <td style={{ padding: "12px 40px" }}></td>
-                      <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.wins}</td>
-                      <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.losses}</td>
-                      <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.draws}</td>
-                      <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center", fontWeight: "600" }}>{team.strokeDiff}</td>
-                      <td style={{ padding: "12px", textAlign: "center", fontWeight: "700", color: "#166534" }}>{team.points}</td>
-                    </tr>
-                  ))}
+                {sorted.map((team, index) => (
+                  <tr key={team.name} style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: "600" }}>#{index + 1}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", fontWeight: "700" }}>{team.name}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", color: "#475569" }}>{team.players.join(" & ")}</td>
+                    <td style={{ padding: "12px 40px" }}></td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.wins}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.losses}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>{team.draws}</td>
+                    <td style={{ padding: "12px", borderRight: "2px solid #cbd5e1", textAlign: "center", fontWeight: "600" }}>{team.strokeDiff}</td>
+                    <td style={{ padding: "12px", textAlign: "center", fontWeight: "700", color: "#166534" }}>{team.points}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </section>
 
-        {/* SUBMIT SCORE — NOW FORMATTED AS A TABLE */}
+        {/* TWO‑COLUMN LAYOUT */}
         <section id="submit" className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
+          {/* LEFT HALF — UPLOAD SCORE TABLE */}
           <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg">
 
             <h2 className="text-2xl font-bold mb-4">Submit Match Result</h2>
@@ -231,35 +235,81 @@ export default function SummerGolfLeagueWebsite() {
             </div>
           </div>
 
-          {/* BRACKET */}
+          {/* RIGHT HALF — BRACKET TABLE */}
           <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Live Championship Bracket</h2>
 
-            <div className="space-y-6 text-sm">
+            <h2 className="text-2xl font-bold mb-4">Tournament Bracket</h2>
 
-              <div>
-                <h3 className="text-base font-bold mb-2 text-green-700">Play-In Round</h3>
-                <div className="space-y-2">
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#3 __________________ vs #6 __________________</div>
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#4 __________________ vs #5 __________________</div>
-                </div>
-              </div>
+            <div style={{
+              width: "100%",
+              border: "2px solid #cbd5e1",
+              borderRadius: "12px",
+              overflow: "hidden",
+            }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                <tbody>
 
-              <div>
-                <h3 className="text-base font-bold mb-2 text-green-700">Semifinals</h3>
-                <div className="space-y-2">
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#1 __________________ vs __________________</div>
-                  <div className="bg-slate-100 p-3 rounded-lg border text-xs">#2 __________________ vs __________________</div>
-                </div>
-              </div>
+                  {/* PLAY-IN ROUND */}
+                  <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "14px", fontWeight: "700" }}>Play‑In Round</td>
+                    <td></td>
+                  </tr>
 
-              <div>
-                <h3 className="text-base font-bold mb-2 text-green-700">Championship</h3>
-                <div className="bg-slate-100 p-4 rounded-lg border text-center">
-                  <p className="text-sm font-semibold">__________________</p>
-                </div>
-              </div>
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                      #{sorted.indexOf(seed3) + 1} {seed3.name}
+                    </td>
+                    <td style={{ padding: "14px" }}>
+                      vs #{sorted.indexOf(seed6) + 1} {seed6.name}
+                    </td>
+                  </tr>
 
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                      #{sorted.indexOf(seed4) + 1} {seed4.name}
+                    </td>
+                    <td style={{ padding: "14px" }}>
+                      vs #{sorted.indexOf(seed5) + 1} {seed5.name}
+                    </td>
+                  </tr>
+
+                  {/* SEMIFINALS */}
+                  <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "14px", fontWeight: "700" }}>Semifinals</td>
+                    <td></td>
+                  </tr>
+
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                      #{sorted.indexOf(seed1) + 1} {seed1.name}
+                    </td>
+                    <td style={{ padding: "14px" }}>
+                      vs Winner of #{sorted.indexOf(seed4) + 1} / #{sorted.indexOf(seed5) + 1}
+                    </td>
+                  </tr>
+
+                  <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "14px", fontWeight: "600" }}>
+                      #{sorted.indexOf(seed2) + 1} {seed2.name}
+                    </td>
+                    <td style={{ padding: "14px" }}>
+                      vs Winner of #{sorted.indexOf(seed3) + 1} / #{sorted.indexOf(seed6) + 1}
+                    </td>
+                  </tr>
+
+                  {/* CHAMPIONSHIP */}
+                  <tr style={{ background: "#f8fafc", borderBottom: "2px solid #cbd5e1" }}>
+                    <td style={{ padding: "14px", fontWeight: "700" }}>Championship</td>
+                    <td></td>
+                  </tr>
+
+                  <tr>
+                    <td style={{ padding: "14px", fontWeight: "600" }}>Winner</td>
+                    <td style={{ padding: "14px" }}>________________________</td>
+                  </tr>
+
+                </tbody>
+              </table>
             </div>
           </div>
 

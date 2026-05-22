@@ -19,20 +19,38 @@ export default function SummerGolfLeagueWebsite() {
   function submitMatch() {
     if (!winner || !opponent || winner === opponent) return;
 
-    const wScore = parseInt(winnerScore);
-    const lScore = parseInt(loserScore);
+    const w = parseInt(winnerScore);
+    const l = parseInt(loserScore);
+
+    const diff = w - l; // positive for winner, negative for loser
 
     setTeams(prev =>
       prev.map(team => {
-        if (team.name === winner && wScore > lScore) {
-          return { ...team, wins: team.wins + 1, points: team.points + 3, strokeDiff: team.strokeDiff + (lScore - wScore) };
+        if (team.name === winner && w > l) {
+          return {
+            ...team,
+            wins: team.wins + 1,
+            points: team.points + 3,
+            strokeDiff: team.strokeDiff + diff,
+          };
         }
-        if (team.name === opponent && wScore > lScore) {
-          return { ...team, losses: team.losses + 1, strokeDiff: team.strokeDiff + (wScore - lScore) };
+
+        if (team.name === opponent && w > l) {
+          return {
+            ...team,
+            losses: team.losses + 1,
+            strokeDiff: team.strokeDiff - diff,
+          };
         }
-        if (wScore === lScore && (team.name === winner || team.name === opponent)) {
-          return { ...team, draws: team.draws + 1, points: team.points + 1 };
+
+        if (w === l && (team.name === winner || team.name === opponent)) {
+          return {
+            ...team,
+            draws: team.draws + 1,
+            points: team.points + 1,
+          };
         }
+
         return team;
       })
     );
@@ -84,29 +102,29 @@ export default function SummerGolfLeagueWebsite() {
             <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold">LIVE</div>
           </div>
 
-          {/* ⭐ INLINE‑CSS TABLE — THIS WILL FINALLY LOOK DIFFERENT ⭐ */}
+          {/* ⭐ SHRUNK INLINE‑CSS TABLE ⭐ */}
           <div style={{ width: "100%", overflowX: "auto" }}>
             <table
               style={{
                 width: "100%",
                 borderCollapse: "collapse",
-                fontSize: "18px",
+                fontSize: "15px",
               }}
             >
               <thead>
-                <tr style={{ background: "#f1f5f9", borderBottom: "4px solid #cbd5e1" }}>
-                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Rank</th>
-                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Team</th>
-                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Players</th>
+                <tr style={{ background: "#f1f5f9", borderBottom: "2px solid #cbd5e1" }}>
+                  <th style={{ padding: "14px", borderRight: "2px solid #cbd5e1" }}>Rank</th>
+                  <th style={{ padding: "14px", borderRight: "2px solid #cbd5e1" }}>Team</th>
+                  <th style={{ padding: "14px", borderRight: "2px solid #cbd5e1" }}>Players</th>
 
-                  {/* HUGE SPACER */}
-                  <th style={{ padding: "20px 120px" }}></th>
+                  {/* SMALLER SPACER */}
+                  <th style={{ padding: "14px 60px" }}></th>
 
-                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Wins</th>
-                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Losses</th>
-                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>Draws</th>
-                  <th style={{ padding: "20px", borderRight: "4px solid #cbd5e1" }}>+/−</th>
-                  <th style={{ padding: "20px" }}>Points</th>
+                  <th style={{ padding: "14px", borderRight: "2px solid #cbd5e1" }}>Wins</th>
+                  <th style={{ padding: "14px", borderRight: "2px solid #cbd5e1" }}>Losses</th>
+                  <th style={{ padding: "14px", borderRight: "2px solid #cbd5e1" }}>Draws</th>
+                  <th style={{ padding: "14px", borderRight: "2px solid #cbd5e1" }}>+/−</th>
+                  <th style={{ padding: "14px" }}>Points</th>
                 </tr>
               </thead>
 
@@ -117,38 +135,38 @@ export default function SummerGolfLeagueWebsite() {
                     <tr
                       key={team.name}
                       style={{
-                        borderBottom: "4px solid #cbd5e1",
+                        borderBottom: "2px solid #cbd5e1",
                         background: "#ffffff",
                       }}
                     >
-                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", fontWeight: "600" }}>
+                      <td style={{ padding: "16px", borderRight: "2px solid #cbd5e1", fontWeight: "600" }}>
                         #{index + 1}
                       </td>
 
-                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", fontWeight: "700" }}>
+                      <td style={{ padding: "16px", borderRight: "2px solid #cbd5e1", fontWeight: "700" }}>
                         {team.name}
                       </td>
 
-                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", color: "#475569" }}>
+                      <td style={{ padding: "16px", borderRight: "2px solid #cbd5e1", color: "#475569" }}>
                         {team.players.join(" & ")}
                       </td>
 
-                      {/* HUGE SPACER */}
-                      <td style={{ padding: "28px 120px" }}></td>
+                      {/* SMALLER SPACER */}
+                      <td style={{ padding: "16px 60px" }}></td>
 
-                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center" }}>
+                      <td style={{ padding: "16px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>
                         {team.wins}
                       </td>
-                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center" }}>
+                      <td style={{ padding: "16px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>
                         {team.losses}
                       </td>
-                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center" }}>
+                      <td style={{ padding: "16px", borderRight: "2px solid #cbd5e1", textAlign: "center" }}>
                         {team.draws}
                       </td>
-                      <td style={{ padding: "28px", borderRight: "4px solid #cbd5e1", textAlign: "center", fontWeight: "600" }}>
+                      <td style={{ padding: "16px", borderRight: "2px solid #cbd5e1", textAlign: "center", fontWeight: "600" }}>
                         {team.strokeDiff}
                       </td>
-                      <td style={{ padding: "28px", textAlign: "center", fontWeight: "700", color: "#166534" }}>
+                      <td style={{ padding: "16px", textAlign: "center", fontWeight: "700", color: "#166534" }}>
                         {team.points}
                       </td>
                     </tr>

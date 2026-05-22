@@ -114,7 +114,7 @@ export default function SummerGolfLeagueWebsite() {
 
       {/* NAV BAR */}
       <nav className="w-full bg-green-900 text-white py-3 shadow-md">
-        <div className="max-w-6xl mx-auto flex items-center gap-10 text-base font-semibold">
+        <div className="max-w-7xl mx-auto flex items-center gap-10 text-base font-semibold">
           <span className="tracking-[0.25em] text-xs uppercase text-green-200">
             SUMMER 2026 GOLF LEAGUE
           </span>
@@ -127,7 +127,7 @@ export default function SummerGolfLeagueWebsite() {
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 py-10 space-y-10">
 
         {/* HEADER */}
         <header className="text-center">
@@ -158,17 +158,23 @@ export default function SummerGolfLeagueWebsite() {
           </div>
 
           <div className="overflow-x-auto">
-            {/* ⭐ NEW TABLE WITH BORDERS ⭐ */}
-            <table className="w-full text-sm border-collapse">
+
+            {/* ⭐ NEW FULL-WIDTH TABLE WITH EXTRA SPACING ⭐ */}
+            <table className="w-full border-collapse text-base">
               <thead className="bg-slate-100 text-slate-700 uppercase text-xs tracking-wide border-b">
                 <tr>
-                  <th className="px-6 py-3 text-left border-r">Rank</th>
-                  <th className="px-6 py-3 text-left border-r">Team</th>
-                  <th className="px-6 py-3 text-left border-r">Players</th>
-                  <th className="px-4 py-3 text-center border-r">Wins</th>
-                  <th className="px-4 py-3 text-center border-r">Losses</th>
-                  <th className="px-4 py-3 text-center border-r">+/−</th>
-                  <th className="px-4 py-3 text-center">Points</th>
+                  <th className="px-8 py-4 text-left border-r w-20">Rank</th>
+                  <th className="px-8 py-4 text-left border-r w-64">Team</th>
+                  <th className="px-8 py-4 text-left border-r">Players</th>
+
+                  {/* SPACER COLUMN */}
+                  <th className="px-16"></th>
+
+                  <th className="px-8 py-4 text-center border-r w-20">Wins</th>
+                  <th className="px-8 py-4 text-center border-r w-20">Losses</th>
+                  <th className="px-8 py-4 text-center border-r w-20">Draws</th>
+                  <th className="px-8 py-4 text-center border-r w-20">+/−</th>
+                  <th className="px-8 py-4 text-center w-24">Points</th>
                 </tr>
               </thead>
 
@@ -180,22 +186,26 @@ export default function SummerGolfLeagueWebsite() {
                       key={team.name}
                       className="border-b hover:bg-green-50 transition-colors"
                     >
-                      <td className="px-6 py-4 font-semibold border-r">#{index + 1}</td>
+                      <td className="px-8 py-5 font-semibold border-r">#{index + 1}</td>
 
-                      <td className="px-6 py-4 font-bold border-r">
+                      <td className="px-8 py-5 font-bold border-r">
                         {team.name}
                       </td>
 
-                      <td className="px-6 py-4 text-slate-600 border-r">
+                      <td className="px-8 py-5 text-slate-600 border-r">
                         {team.players.join(" & ")}
                       </td>
 
-                      <td className="px-4 py-4 text-center border-r">{team.wins}</td>
-                      <td className="px-4 py-4 text-center border-r">{team.losses}</td>
-                      <td className="px-4 py-4 text-center font-semibold border-r">
+                      {/* SPACER */}
+                      <td className="px-16"></td>
+
+                      <td className="px-8 py-5 text-center border-r">{team.wins}</td>
+                      <td className="px-8 py-5 text-center border-r">{team.losses}</td>
+                      <td className="px-8 py-5 text-center border-r">{team.draws}</td>
+                      <td className="px-8 py-5 text-center font-semibold border-r">
                         {team.strokeDiff}
                       </td>
-                      <td className="px-4 py-4 text-center font-semibold text-green-700">
+                      <td className="px-8 py-5 text-center font-semibold text-green-700">
                         {team.points}
                       </td>
                     </tr>

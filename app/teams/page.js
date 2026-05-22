@@ -17,10 +17,17 @@ export default function TeamsPage() {
         <tbody>
           {teams.map((t) => (
             <tr key={t.name} className="border-b text-center">
-              <td className="p-2">{t.name}</td>
-              <td className="p-2">{t.wins}</td>
-              <td className="p-2">{t.losses}</td>
-              <td className="p-2">{t.avg}</td>
+              <td className="p-2 flex items-center gap-2">
+                <img 
+                  src={t.logo} 
+                  alt={t.name} 
+                  className="w-10 h-10 object-contain rounded"
+                />
+                {t.name}
+              </td>
+              <td className="p-2">{t.wins ?? "-"}</td>
+              <td className="p-2">{t.losses ?? "-"}</td>
+              <td className="p-2">{t.avg ?? "-"}</td>
             </tr>
           ))}
         </tbody>

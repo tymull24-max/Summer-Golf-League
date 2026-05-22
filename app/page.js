@@ -23,7 +23,7 @@ export default function SummerGolfLeagueWebsite() {
     const l = parseInt(loserScore);
     if (isNaN(w) || isNaN(l)) return;
 
-    const diff = l - w; // golf logic: lower score wins
+    const diff = l - w;
 
     setTeams(prev =>
       prev.map(team => {
@@ -74,19 +74,16 @@ export default function SummerGolfLeagueWebsite() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-950 via-green-900 to-green-800 text-white">
 
-      {/* NEW MEDIUM HEADER */}
+      {/* HEADER */}
       <nav className="w-full bg-green-900 text-white py-8 shadow-lg border-b-4 border-green-600">
         <div className="max-w-7xl mx-auto px-4">
 
-          {/* TITLE */}
           <h1 className="text-5xl font-extrabold tracking-wide text-white">
             2026 Summer Golf League
           </h1>
 
-          {/* ACCENT BAR */}
           <div className="w-48 h-1 bg-green-300 mt-3 mb-5"></div>
 
-          {/* NAV LINKS */}
           <div className="flex gap-10 text-lg font-semibold text-green-100">
             <a href="#" className="hover:text-white transition">Home</a>
             <a href="#standings" className="hover:text-white transition">Standings</a>
@@ -99,7 +96,7 @@ export default function SummerGolfLeagueWebsite() {
 
       <div className="max-w-7xl mx-auto px-4 py-10 space-y-10">
 
-        {/* STANDINGS TABLE */}
+        {/* FULL-WIDTH STANDINGS */}
         <section id="standings" className="bg-white text-slate-900 rounded-2xl shadow-lg overflow-hidden w-full">
 
           <div className="px-6 py-4 border-b bg-slate-100 flex items-center justify-between">
@@ -142,8 +139,8 @@ export default function SummerGolfLeagueWebsite() {
           </div>
         </section>
 
-        {/* 50/50 SPLIT WITH ALIGNMENT LOCK */}
-        <section id="submit" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        {/* RESPONSIVE SPLIT (B) WITH ALIGNMENT LOCK */}
+        <section id="submit" className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start content-start place-items-start">
 
           {/* LEFT SIDE — UPLOAD SCORE */}
           <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-lg flex flex-col justify-start h-full">

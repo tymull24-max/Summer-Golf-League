@@ -1,5 +1,5 @@
 "use client";
- 
+
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 
@@ -17,10 +17,19 @@ const DEFAULT_PLAYERS = {
   "Shock Tops": ["Jack Behnfeldt", "Cole Keefer"],
 };
 
+const DEFAULT_TEAMS_FALLBACK = [
+  { name: "Banana Hammocks", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Smoove Operators", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Brown Nosers", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "The Nursery", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Greenside Gamblers", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Shock Tops", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+];
+
 export default function SummerGolfLeagueWebsite() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
- 
+
   const [winner, setWinner] = useState("");
   const [opponent, setOpponent] = useState("");
   const [winnerScore, setWinnerScore] = useState("");
@@ -32,56 +41,94 @@ export default function SummerGolfLeagueWebsite() {
 
   async function fetchTeams() {
     setLoading(true);
+
     const { data, error } = await supabase
       .from("teams")
       .select("*")
       .order("points", { ascending: false });
-    if (!error && data) {
-      setTeams(
-        data.map((t) => ({
-          ...t,
-          players: DEFAULT_PLAYERS[t.name] || [],
-          strokeDiff: t.stroke_diff,
-        }))
-      );
-    }
+
+    const base =
+      !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;
+
+    setTeams(
+      base.map((t) => ({
+        ...t,
+        players: DEFAULT_PLAYERS[t.name] || ["Unknown", "Unknown"],
+        wins: t.wins ?? 0,
+        losses: t.losses ?? 0,
+        draws: t.draws ?? 0,
+        points: t.points ?? 0,
+        strokeDiff: t.stroke_diff ?? 0,
+      }))
+    );
+
     setLoading(false);
   }
- 
+
   async function submitMatch() {
     if (!winner || !opponent || winner === opponent) return;
- 
-    const w = parseInt(winnerScore);
-    const l = parseInt(loserScore);
-    if (isNaN(w) || isNaN(l)) return;
- 
-    const diff = l - w;
 
-    const winningTeam = teams.find((t) => t.name === winner);
-    const losingTeam = teams.find((t) => t.name === opponent);
+    const w = Number(winnerScore);
+    const l = Number(loserScore);
+
+    if (isNaN(w) || isNaN(l)) return;
+
+    const winningTeam = teams.find(
+      (t) => t.name.trim() === winner.trim()
+    );
+    const losingTeam = teams.find(
+      (t) => t.name.trim() === opponent.trim()
+    );
+
     if (!winningTeam || !losingTeam) return;
 
+    // DRAW
     if (w === l) {
-      await supabase.from("teams").update({
-        draws: winningTeam.draws + 1,
-        points: winningTeam.points + 1,
-      }).eq("name", winner);
-      await supabase.from("teams").update({
-        draws: losingTeam.draws + 1,
-        points: losingTeam.points + 1,
-      }).eq("name", opponent);
-    } else if (w < l) {
-      await supabase.from("teams").update({
-        wins: winningTeam.wins + 1,
-        points: winningTeam.points + 3,
-        stroke_diff: winningTeam.stroke_diff + Math.abs(diff),
-      }).eq("name", winner);
-      await supabase.from("teams").update({
-        losses: losingTeam.losses + 1,
-        stroke_diff: losingTeam.stroke_diff - Math.abs(diff),
-      }).eq("name", opponent);
+      await supabase
+        .from("teams")
+        .update({
+          draws: (winningTeam.draws ?? 0) + 1,
+          points: (winningTeam.points ?? 0) + 1,
+        })
+        .eq("name", winner);
+
+      await supabase
+        .from("teams")
+        .update({
+          draws: (losingTeam.draws ?? 0) + 1,
+          points: (losingTeam.points ?? 0) + 1,
+        })
+        .eq("name", opponent);
     }
- 
+
+    // WINNER HAS LOWER SCORE (GOLF LOGIC)
+    if (w < l) {
+      const diff = l - w;
+
+      await supabase
+        .from("teams")
+        .update({
+          wins: (winningTeam.wins ?? 0) + 1,
+          points: (winningTeam.points ?? 0) + 3,
+          stroke_diff:
+            (winningTeam.strokeDiff ??
+              winningTeam.stroke_diff ??
+              0) + diff,
+        })
+        .eq("name", winner);
+
+      await supabase
+        .from("teams")
+        .update({
+          losses: (losingTeam.losses ?? 0) + 1,
+          stroke_diff:
+            (losingTeam.strokeDiff ??
+              losingTeam.stroke_diff ??
+              0) - diff,
+        })
+        .eq("name", opponent);
+    }
+
     setWinner("");
     setOpponent("");
     setWinnerScore("");
@@ -89,16 +136,18 @@ export default function SummerGolfLeagueWebsite() {
 
     fetchTeams();
   }
- 
-  const sorted = [...teams].sort((a, b) => b.points - a.points);
- 
+
+  const sorted = [...teams].sort(
+    (a, b) => (b.points ?? 0) - (a.points ?? 0)
+  );
+
   const seed1 = sorted[0] || {};
   const seed2 = sorted[1] || {};
   const seed3 = sorted[2] || {};
   const seed4 = sorted[3] || {};
   const seed5 = sorted[4] || {};
   const seed6 = sorted[5] || {};
- 
+
   return (
     <div
       style={{
@@ -136,7 +185,7 @@ export default function SummerGolfLeagueWebsite() {
           >
             2026 Summer Golf League
           </h1>
- 
+
           <div
             style={{
               width: "260px",
@@ -147,7 +196,7 @@ export default function SummerGolfLeagueWebsite() {
               borderRadius: "999px",
             }}
           ></div>
- 
+
           <nav
             style={{
               display: "flex",
@@ -181,7 +230,7 @@ export default function SummerGolfLeagueWebsite() {
           </nav>
         </div>
       </header>
- 
+
       {/* MAIN CONTENT */}
       <main
         style={{
@@ -216,7 +265,7 @@ export default function SummerGolfLeagueWebsite() {
             <h2 style={{ fontSize: "22px", fontWeight: 800 }}>
               Live Standings
             </h2>
- 
+
             <div
               style={{
                 backgroundColor: "#dcfce7",
@@ -230,178 +279,203 @@ export default function SummerGolfLeagueWebsite() {
               LIVE
             </div>
           </div>
- 
+
           <div style={{ width: "100%", overflowX: "auto" }}>
             {loading ? (
-              <div style={{ padding: "24px", textAlign: "center", color: "#64748b", fontSize: "14px" }}>
+              <div
+                style={{
+                  padding: "24px",
+                  textAlign: "center",
+                  color: "#64748b",
+                  fontSize: "14px",
+                }}
+              >
                 Loading standings...
               </div>
             ) : (
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: "14px",
-              }}
-            >
-              <thead>
-                <tr
-                  style={{
-                    background: "#f8fafc",
-                    borderBottom: "2px solid #cbd5e1",
-                  }}
-                >
-                  <th
-                    style={{
-                      padding: "10px",
-                      borderRight: "2px solid #cbd5e1",
-                    }}
-                  >
-                    Rank
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      borderRight: "2px solid #cbd5e1",
-                    }}
-                  >
-                    Team
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      borderRight: "2px solid #cbd5e1",
-                    }}
-                  >
-                    Players
-                  </th>
-                  <th style={{ padding: "10px 40px" }}></th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      borderRight: "2px solid #cbd5e1",
-                    }}
-                  >
-                    Wins
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      borderRight: "2px solid #cbd5e1",
-                    }}
-                  >
-                    Losses
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      borderRight: "2px solid #cbd5e1",
-                    }}
-                  >
-                    Draws
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px",
-                      borderRight: "2px solid #cbd5e1",
-                    }}
-                  >
-                    +/−
-                  </th>
-                  <th style={{ padding: "10px" }}>Points</th>
-                </tr>
-              </thead>
- 
-              <tbody>
-                {sorted.map((team, index) => (
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: "14px",
+                }}
+              >
+                <thead>
                   <tr
-                    key={team.name}
-                    style={{ borderBottom: "2px solid #cbd5e1" }}
+                    style={{
+                      background: "#f8fafc",
+                      borderBottom: "2px solid #cbd5e1",
+                    }}
                   >
-                    <td
+                    <th
                       style={{
-                        padding: "12px",
+                        padding: "10px",
                         borderRight: "2px solid #cbd5e1",
-                        fontWeight: 600,
                       }}
                     >
-                      #{index + 1}
-                    </td>
-                    <td
+                      Rank
+                    </th>
+
+                    <th
                       style={{
-                        padding: "12px",
+                        padding: "10px",
                         borderRight: "2px solid #cbd5e1",
-                        fontWeight: 700,
                       }}
                     >
-                      {team.name}
-                    </td>
-                    <td
+                      Team
+                    </th>
+
+                    <th
                       style={{
-                        padding: "12px",
+                        padding: "10px",
                         borderRight: "2px solid #cbd5e1",
-                        color: "#475569",
                       }}
                     >
-                      {team.players.join(" & ")}
-                    </td>
-                    <td style={{ padding: "12px 40px" }}></td>
-                    <td
+                      Players
+                    </th>
+
+                    <th style={{ padding: "10px 40px" }}></th>
+
+                    <th
                       style={{
-                        padding: "12px",
+                        padding: "10px",
                         borderRight: "2px solid #cbd5e1",
-                        textAlign: "center",
                       }}
                     >
-                      {team.wins}
-                    </td>
-                    <td
+                      Wins
+                    </th>
+
+                    <th
                       style={{
-                        padding: "12px",
+                        padding: "10px",
                         borderRight: "2px solid #cbd5e1",
-                        textAlign: "center",
                       }}
                     >
-                      {team.losses}
-                    </td>
-                    <td
+                      Losses
+                    </th>
+
+                    <th
                       style={{
-                        padding: "12px",
+                        padding: "10px",
                         borderRight: "2px solid #cbd5e1",
-                        textAlign: "center",
                       }}
                     >
-                      {team.draws}
-                    </td>
-                    <td
+                      Draws
+                    </th>
+
+                    <th
                       style={{
-                        padding: "12px",
+                        padding: "10px",
                         borderRight: "2px solid #cbd5e1",
-                        textAlign: "center",
-                        fontWeight: 600,
                       }}
                     >
-                      {team.strokeDiff}
-                    </td>
-                    <td
-                      style={{
-                        padding: "12px",
-                        textAlign: "center",
-                        fontWeight: 700,
-                        color: "#166534",
-                      }}
-                    >
-                      {team.points}
-                    </td>
+                      +/−
+                    </th>
+
+                    <th style={{ padding: "10px" }}>Points</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {sorted.map((team, index) => (
+                    <tr
+                      key={team.name}
+                      style={{ borderBottom: "2px solid #cbd5e1" }}
+                    >
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderRight: "2px solid #cbd5e1",
+                          fontWeight: 600,
+                        }}
+                      >
+                        #{index + 1}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderRight: "2px solid #cbd5e1",
+                          fontWeight: 700,
+                        }}
+                      >
+                        {team.name}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderRight: "2px solid #cbd5e1",
+                          color: "#475569",
+                        }}
+                      >
+                        {team.players?.length
+                          ? team.players.join(" & ")
+                          : "—"}
+                      </td>
+
+                      <td style={{ padding: "12px 40px" }}></td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderRight: "2px solid #cbd5e1",
+                          textAlign: "center",
+                        }}
+                      >
+                        {team.wins ?? 0}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderRight: "2px solid #cbd5e1",
+                          textAlign: "center",
+                        }}
+                      >
+                        {team.losses ?? 0}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderRight: "2px solid #cbd5e1",
+                          textAlign: "center",
+                        }}
+                      >
+                        {team.draws ?? 0}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          borderRight: "2px solid #cbd5e1",
+                          textAlign: "center",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {team.strokeDiff ?? 0}
+                      </td>
+
+                      <td
+                        style={{
+                          padding: "12px",
+                          textAlign: "center",
+                          fontWeight: 700,
+                          color: "#166534",
+                        }}
+                      >
+                        {team.points ?? 0}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </div>
         </section>
- 
-        {/* TEAMS SECTION (Spot 1) */}
+
+        {/* TEAMS SECTION */}
         <section
           id="teams"
           style={{
@@ -423,7 +497,7 @@ export default function SummerGolfLeagueWebsite() {
           >
             Teams
           </h2>
- 
+
           <div
             style={{
               display: "flex",
@@ -488,7 +562,7 @@ export default function SummerGolfLeagueWebsite() {
             ))}
           </div>
         </section>
- 
+
         {/* SUBMIT + BRACKET SECTION */}
         <section
           id="submit"
@@ -529,7 +603,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Submit Match Result
               </h2>
- 
+
               <div
                 style={{
                   width: "100%",
@@ -568,14 +642,16 @@ export default function SummerGolfLeagueWebsite() {
                             border: "1px solid #cbd5e1",
                           }}
                         >
-                          <option>Select Winning Team</option>
+                          <option value="">Select Winning Team</option>
                           {teams.map((team) => (
-                            <option key={team.name}>{team.name}</option>
+                            <option key={team.name} value={team.name}>
+                              {team.name}
+                            </option>
                           ))}
                         </select>
                       </td>
                     </tr>
- 
+
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -601,7 +677,7 @@ export default function SummerGolfLeagueWebsite() {
                         />
                       </td>
                     </tr>
- 
+
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -623,14 +699,16 @@ export default function SummerGolfLeagueWebsite() {
                             border: "1px solid #cbd5e1",
                           }}
                         >
-                          <option>Select Opponent</option>
+                          <option value="">Select Opponent</option>
                           {teams.map((team) => (
-                            <option key={team.name}>{team.name}</option>
+                            <option key={team.name} value={team.name}>
+                              {team.name}
+                            </option>
                           ))}
                         </select>
                       </td>
                     </tr>
- 
+
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -659,7 +737,7 @@ export default function SummerGolfLeagueWebsite() {
                   </tbody>
                 </table>
               </div>
- 
+
               <button
                 onClick={submitMatch}
                 style={{
@@ -677,7 +755,7 @@ export default function SummerGolfLeagueWebsite() {
                 Upload Final Score
               </button>
             </div>
- 
+
             {/* RIGHT CARD — Bracket */}
             <div
               style={{
@@ -701,7 +779,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Tournament Bracket
               </h2>
- 
+
               <div
                 style={{
                   width: "100%",
@@ -735,7 +813,7 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td></td>
                     </tr>
- 
+
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -749,7 +827,7 @@ export default function SummerGolfLeagueWebsite() {
                         vs #{sorted.indexOf(seed6) + 1} {seed6.name}
                       </td>
                     </tr>
- 
+
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -763,7 +841,7 @@ export default function SummerGolfLeagueWebsite() {
                         vs #{sorted.indexOf(seed5) + 1} {seed5.name}
                       </td>
                     </tr>
- 
+
                     {/* Semifinals */}
                     <tr
                       style={{
@@ -781,7 +859,7 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td></td>
                     </tr>
- 
+
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -793,10 +871,10 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td style={{ padding: "12px" }}>
                         vs Winner of #{sorted.indexOf(seed4) + 1} /{" "}
-                        #{sorted.indexOf(seed5) + 1}
+                        {sorted.indexOf(seed5) + 1}
                       </td>
                     </tr>
- 
+
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
@@ -808,10 +886,10 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td style={{ padding: "12px" }}>
                         vs Winner of #{sorted.indexOf(seed3) + 1} /{" "}
-                        #{sorted.indexOf(seed6) + 1}
+                        {sorted.indexOf(seed6) + 1}
                       </td>
                     </tr>
- 
+
                     {/* Championship */}
                     <tr
                       style={{
@@ -829,7 +907,7 @@ export default function SummerGolfLeagueWebsite() {
                       </td>
                       <td></td>
                     </tr>
- 
+
                     <tr>
                       <td
                         style={{
@@ -849,7 +927,7 @@ export default function SummerGolfLeagueWebsite() {
             </div>
           </div>
         </section>
- 
+
         {/* SCHEDULE AT THE BOTTOM */}
         <section
           id="schedule"
@@ -873,7 +951,7 @@ export default function SummerGolfLeagueWebsite() {
           >
             2026 Regular Season Schedule
           </h2>
- 
+
           <div
             style={{
               display: "flex",
@@ -902,7 +980,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>Greenside Gamblers vs Shock Tops</li>
               </ul>
             </div>
- 
+
             <div>
               <h3
                 style={{
@@ -924,7 +1002,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>Brown Nosers vs Shock Tops</li>
               </ul>
             </div>
- 
+
             <div>
               <h3
                 style={{
@@ -946,7 +1024,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>The Nursery vs Greenside Gamblers</li>
               </ul>
             </div>
- 
+
             <div>
               <h3
                 style={{
@@ -968,7 +1046,7 @@ export default function SummerGolfLeagueWebsite() {
                 <li>Smoove Operators vs Shock Tops</li>
               </ul>
             </div>
- 
+
             <div>
               <h3
                 style={{

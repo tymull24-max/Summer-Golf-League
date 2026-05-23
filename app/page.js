@@ -40,33 +40,33 @@ export default function SummerGolfLeagueWebsite() {
     fetchTeams();
   }, []);
 
-  async function fetchTeams() {
-    setLoading(true);
+ async function fetchTeams() {
+  setLoading(true);
+  setTeams([]); // clear first to force re-render
 
-    const { data, error } = await supabase
-      .from("teams")
-      .select("*")
-      .order("points", { ascending: false })
-      .order("wins", { ascending: false });
+  const { data, error } = await supabase
+    .from("teams")
+    .select("*")
+    .order("points", { ascending: false })
+    .order("wins", { ascending: false });
 
-    const base =
-      !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;
+  const base =
+    !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;
 
-    setTeams(
-      base.map((t) => ({
-        ...t,
-        players: DEFAULT_PLAYERS[t.name] || ["Unknown", "Unknown"],
-        wins: t.wins ?? 0,
-        losses: t.losses ?? 0,
-        draws: t.draws ?? 0,
-        points: t.points ?? 0,
-        strokeDiff: t.stroke_diff ?? 0,
-      }))
-    );
+  setTeams(
+    base.map((t) => ({
+      ...t,
+      players: DEFAULT_PLAYERS[t.name] || ["Unknown", "Unknown"],
+      wins: t.wins ?? 0,
+      losses: t.losses ?? 0,
+      draws: t.draws ?? 0,
+      points: t.points ?? 0,
+      strokeDiff: t.stroke_diff ?? 0,
+    }))
+  );
 
-    setLoading(false);
-  }
-
+  setLoading(false);
+}
   async function submitMatch() {
     // Validation
     if (!winner || winner === "Select Winning Team") {

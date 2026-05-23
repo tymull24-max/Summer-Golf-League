@@ -57,7 +57,7 @@ export default function SummerGolfLeagueWebsite() {
         losses: t.losses ?? 0,
         draws: t.draws ?? 0,
         points: t.points ?? 0,
-        strokeDiff: t.stroke_diff ?? 0, // UI value
+        strokeDiff: t.stroke_diff ?? 0,
       }))
     );
 
@@ -65,45 +65,23 @@ export default function SummerGolfLeagueWebsite() {
   }
 
   async function submitMatch() {
-    if (!winner) {
-      setSubmitStatus("❌ Please select a winning team.");
-      return;
-    }
-    if (!opponent) {
-      setSubmitStatus("❌ Please select an opponent.");
-      return;
-    }
-    if (winner === opponent) {
-      setSubmitStatus("❌ Winner and opponent cannot be the same team.");
-      return;
-    }
-    if (winnerScore === "" || loserScore === "") {
-      setSubmitStatus("❌ Please enter both scores.");
-      return;
-    }
+    if (!winner) return setSubmitStatus("❌ Please select a winning team.");
+    if (!opponent) return setSubmitStatus("❌ Please select an opponent.");
+    if (winner === opponent) return setSubmitStatus("❌ Winner and opponent cannot be the same team.");
+    if (winnerScore === "" || loserScore === "") return setSubmitStatus("❌ Please enter both scores.");
 
     const w = Number(winnerScore);
     const l = Number(loserScore);
 
-    if (isNaN(w) || isNaN(l)) {
-      setSubmitStatus("❌ Scores must be numbers.");
-      return;
-    }
-
-    if (w > l) {
-      setSubmitStatus("❌ In golf, the winner has a LOWER score.");
-      return;
-    }
+    if (isNaN(w) || isNaN(l)) return setSubmitStatus("❌ Scores must be numbers.");
+    if (w > l) return setSubmitStatus("❌ In golf, the winner has a LOWER score.");
 
     setSubmitStatus("⏳ Saving...");
 
     const winningTeam = teams.find((t) => t.name === winner);
     const losingTeam = teams.find((t) => t.name === opponent);
 
-    if (!winningTeam || !losingTeam) {
-      setSubmitStatus("❌ Could not find team data.");
-      return;
-    }
+    if (!winningTeam || !losingTeam) return setSubmitStatus("❌ Could not find team data.");
 
     const diff = Math.abs(l - w);
 
@@ -117,10 +95,7 @@ export default function SummerGolfLeagueWebsite() {
         })
         .eq("name", winner);
 
-      if (e1) {
-        setSubmitStatus("❌ Error saving draw: " + e1.message);
-        return;
-      }
+      if (e1) return setSubmitStatus("❌ Error saving draw: " + e1.message);
 
       const { error: e2 } = await supabase
         .from("teams")
@@ -130,10 +105,7 @@ export default function SummerGolfLeagueWebsite() {
         })
         .eq("name", opponent);
 
-      if (e2) {
-        setSubmitStatus("❌ Error saving draw: " + e2.message);
-        return;
-      }
+      if (e2) return setSubmitStatus("❌ Error saving draw: " + e2.message);
     } else {
       // WIN
       const { error: winErr } = await supabase
@@ -141,27 +113,21 @@ export default function SummerGolfLeagueWebsite() {
         .update({
           wins: winningTeam.wins + 1,
           points: winningTeam.points + 3,
-          stroke_diff: (winningTeam.stroke_diff ?? 0) + diff, // uses DB column
+          stroke_diff: (winningTeam.stroke_diff ?? 0) + diff,
         })
         .eq("name", winner);
 
-      if (winErr) {
-        setSubmitStatus("❌ Error saving winner: " + winErr.message);
-        return;
-      }
+      if (winErr) return setSubmitStatus("❌ Error saving winner: " + winErr.message);
 
       const { error: lossErr } = await supabase
         .from("teams")
         .update({
           losses: losingTeam.losses + 1,
-          stroke_diff: (losingTeam.stroke_diff ?? 0) - diff, // uses DB column
+          stroke_diff: (losingTeam.stroke_diff ?? 0) - diff,
         })
         .eq("name", opponent);
 
-      if (lossErr) {
-        setSubmitStatus("❌ Error saving opponent: " + lossErr.message);
-        return;
-      }
+      if (lossErr) return setSubmitStatus("❌ Error saving opponent: " + lossErr.message);
     }
 
     setWinner("");
@@ -172,6 +138,34 @@ export default function SummerGolfLeagueWebsite() {
 
     fetchTeams();
     setTimeout(() => setSubmitStatus(""), 4000);
+  }
+
+  // ⭐ NEW RESET FUNCTION
+  async function resetTeam(teamName) {
+    const team = teams.find((t) => t.name === teamName);
+    if (!team) return setSubmitStatus("❌ Team not found.");
+
+    const newWins = Math.max(0, team.wins - 1);
+    const newLosses = Math.max(0, team.losses - 1);
+    const newDraws = Math.max(0, team.draws - 1);
+    const newPoints = Math.max(0, team.points - 3);
+
+    const { error } = await supabase
+      .from("teams")
+      .update({
+        wins: newWins,
+        losses: newLosses,
+        draws: newDraws,
+        points: newPoints,
+        stroke_diff: team.strokeDiff, // unchanged
+      })
+      .eq("name", teamName);
+
+    if (error) return setSubmitStatus("❌ Error resetting: " + error.message);
+
+    setSubmitStatus("✅ Team reset successfully!");
+    fetchTeams();
+    setTimeout(() => setSubmitStatus(""), 3000);
   }
 
   const sorted = [...teams].sort((a, b) => (b.points ?? 0) - (a.points ?? 0));
@@ -449,7 +443,6 @@ export default function SummerGolfLeagueWebsite() {
             )}
           </div>
         </section>
-
         {/* TEAMS SECTION */}
         <section
           id="teams"
@@ -482,30 +475,12 @@ export default function SummerGolfLeagueWebsite() {
             }}
           >
             {[
-              {
-                name: "Banana Hammocks",
-                logo: "/team-logos/Banana-Hammocks-Logo.png",
-              },
-              {
-                name: "Smoove Operators",
-                logo: "/team-logos/Smoove-Operators-Logo.png",
-              },
-              {
-                name: "Brown Nosers",
-                logo: "/team-logos/The-Brown-Nosers-Logo.png",
-              },
-              {
-                name: "The Nursery",
-                logo: "/team-logos/The-Nursery-Logo.png",
-              },
-              {
-                name: "Greenside Gamblers",
-                logo: "/team-logos/Greenside-Gamblers-Logo.png",
-              },
-              {
-                name: "Shock Tops",
-                logo: "/team-logos/Shock-Tops-Logo.png",
-              },
+              { name: "Banana Hammocks", logo: "/team-logos/Banana-Hammocks-Logo.png" },
+              { name: "Smoove Operators", logo: "/team-logos/Smoove-Operators-Logo.png" },
+              { name: "Brown Nosers", logo: "/team-logos/The-Brown-Nosers-Logo.png" },
+              { name: "The Nursery", logo: "/team-logos/The-Nursery-Logo.png" },
+              { name: "Greenside Gamblers", logo: "/team-logos/Greenside-Gamblers-Logo.png" },
+              { name: "Shock Tops", logo: "/team-logos/Shock-Tops-Logo.png" },
             ].map((team) => (
               <div
                 key={team.name}
@@ -538,7 +513,8 @@ export default function SummerGolfLeagueWebsite() {
             ))}
           </div>
         </section>
-        {/* SUBMIT + BRACKET SECTION */}
+
+        {/* SUBMIT + RESET + BRACKET SECTION */}
         <section
           id="submit"
           style={{
@@ -730,7 +706,6 @@ export default function SummerGolfLeagueWebsite() {
                 Upload Final Score
               </button>
 
-              {/* STATUS MESSAGE */}
               {submitStatus && (
                 <div
                   style={{
@@ -756,6 +731,52 @@ export default function SummerGolfLeagueWebsite() {
               )}
             </div>
 
+            {/* RESET TEAM STATS — NEW FEATURE */}
+            <div
+              style={{
+                backgroundColor: "white",
+                color: "#0f172a",
+                borderRadius: "16px",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                padding: "24px",
+                width: "100%",
+                maxWidth: "420px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "22px",
+                  fontWeight: 800,
+                  marginBottom: "16px",
+                }}
+              >
+                Reset Team Stats
+              </h2>
+
+              <select
+                onChange={(e) => resetTeam(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #cbd5e1",
+                  marginBottom: "16px",
+                }}
+              >
+                <option value="">Select Team to Reset</option>
+                {teams.map((team) => (
+                  <option key={team.name} value={team.name}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
+
+              <p style={{ fontSize: "13px", color: "#475569" }}>
+                This will undo one match result for the selected team.
+              </p>
+            </div>
             {/* RIGHT CARD — Bracket */}
             <div
               style={{

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -29,8 +30,7 @@ const DEFAULT_TEAMS_FALLBACK = [
 export default function SummerGolfLeagueWebsite() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [submitStatus, setSubmitStatus] = useState(""); // feedback message
-
+  const [submitStatus, setSubmitStatus] = useState(""); 
   const [winner, setWinner] = useState("");
   const [opponent, setOpponent] = useState("");
   const [winnerScore, setWinnerScore] = useState("");
@@ -40,47 +40,48 @@ export default function SummerGolfLeagueWebsite() {
     fetchTeams();
   }, []);
 
- async function fetchTeams() {
-  setLoading(true);
-  setTeams([]); // clear first to force re-render
+  async function fetchTeams() {
+    setLoading(true);
 
-  const { data, error } = await supabase
-    .from("teams")
-    .select("*")
-    .order("points", { ascending: false })
-    .order("wins", { ascending: false });
+    const { data, error } = await supabase
+      .from("Teams")   // FIXED
+      .select("*")
+      .order("points", { ascending: false });
 
-  const base =
-    !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;
+    const base =
+      !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;
 
-  setTeams(
-    base.map((t) => ({
-      ...t,
-      players: DEFAULT_PLAYERS[t.name] || ["Unknown", "Unknown"],
-      wins: t.wins ?? 0,
-      losses: t.losses ?? 0,
-      draws: t.draws ?? 0,
-      points: t.points ?? 0,
-      strokeDiff: t.stroke_diff ?? 0,
-    }))
-  );
+    setTeams(
+      base.map((t) => ({
+        ...t,
+        players: DEFAULT_PLAYERS[t.name] || ["Unknown", "Unknown"],
+        wins: t.wins ?? 0,
+        losses: t.losses ?? 0,
+        draws: t.draws ?? 0,
+        points: t.points ?? 0,
+        strokeDiff: t.stroke_diff ?? 0,
+      }))
+    );
 
-  setLoading(false);
-}
+    setLoading(false);
+  }
+
   async function submitMatch() {
-    // Validation
     if (!winner || winner === "Select Winning Team") {
       setSubmitStatus("❌ Please select a winning team.");
       return;
     }
+
     if (!opponent || opponent === "Select Opponent") {
       setSubmitStatus("❌ Please select an opponent.");
       return;
     }
+
     if (winner === opponent) {
       setSubmitStatus("❌ Winner and opponent cannot be the same team.");
       return;
     }
+
     if (winnerScore === "" || loserScore === "") {
       setSubmitStatus("❌ Please enter both scores.");
       return;
@@ -93,8 +94,9 @@ export default function SummerGolfLeagueWebsite() {
       setSubmitStatus("❌ Scores must be numbers.");
       return;
     }
+
     if (w > l) {
-      setSubmitStatus("❌ In golf, the winner has a LOWER score. Please check your scores.");
+      setSubmitStatus("❌ In golf, the winner has a LOWER score.");
       return;
     }
 
@@ -104,65 +106,78 @@ export default function SummerGolfLeagueWebsite() {
     const losingTeam = teams.find((t) => t.name.trim() === opponent.trim());
 
     if (!winningTeam || !losingTeam) {
-      setSubmitStatus("❌ Could not find team data. Try refreshing.");
+      setSubmitStatus("❌ Could not find team data.");
       return;
     }
 
     const diff = Math.abs(l - w);
 
     if (w === l) {
-      // DRAW — both teams get 1 point, no stroke diff change
       const { error: e1 } = await supabase
-        .from("teams")
+        .from("Teams")   // FIXED
         .update({
           draws: (winningTeam.draws ?? 0) + 1,
           points: (winningTeam.points ?? 0) + 1,
         })
         .eq("name", winner);
 
-      if (e1) { setSubmitStatus("❌ Error saving draw: " + e1.message); return; }
+      if (e1) {
+        setSubmitStatus("❌ Error saving draw: " + e1.message);
+        return;
+      }
 
       const { error: e2 } = await supabase
-        .from("teams")
+        .from("Teams")   // FIXED
         .update({
           draws: (losingTeam.draws ?? 0) + 1,
           points: (losingTeam.points ?? 0) + 1,
         })
         .eq("name", opponent);
 
-      if (e2) { setSubmitStatus("❌ Error saving draw: " + e2.message); return; }
-
+      if (e2) {
+        setSubmitStatus("❌ Error saving draw: " + e2.message);
+        return;
+      }
     } else {
-      // WIN — winner gets 3 points, loser gets 0
       const { error: winErr } = await supabase
-        .from("teams")
+        .from("Teams")   // FIXED
         .update({
           wins: (winningTeam.wins ?? 0) + 1,
           points: (winningTeam.points ?? 0) + 3,
-          stroke_diff: (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + diff,
+          stroke_diff:
+            (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + diff,
         })
         .eq("name", winner);
 
-      if (winErr) { setSubmitStatus("❌ Error saving winner: " + winErr.message); return; }
+      if (winErr) {
+        setSubmitStatus("❌ Error saving winner: " + winErr.message);
+        return;
+      }
 
       const { error: lossErr } = await supabase
-        .from("teams")
+        .from("Teams")   // FIXED
         .update({
           losses: (losingTeam.losses ?? 0) + 1,
-          stroke_diff: (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - diff,
+          stroke_diff:
+            (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - diff,
         })
         .eq("name", opponent);
 
-      if (lossErr) { setSubmitStatus("❌ Error saving opponent: " + lossErr.message); return; }
+      if (lossErr) {
+        setSubmitStatus("❌ Error saving opponent: " + lossErr.message);
+        return;
+      }
+    }
     }
 
     setWinner("");
     setOpponent("");
     setWinnerScore("");
     setLoserScore("");
+
     setSubmitStatus("✅ Score saved successfully!");
 
-    await fetchTeams();
+    fetchTeams();
 
     setTimeout(() => setSubmitStatus(""), 4000);
   }
@@ -345,7 +360,6 @@ export default function SummerGolfLeagueWebsite() {
                     >
                       Rank
                     </th>
-
                     <th
                       style={{
                         padding: "10px",
@@ -354,7 +368,6 @@ export default function SummerGolfLeagueWebsite() {
                     >
                       Team
                     </th>
-
                     <th
                       style={{
                         padding: "10px",
@@ -363,9 +376,7 @@ export default function SummerGolfLeagueWebsite() {
                     >
                       Players
                     </th>
-
                     <th style={{ padding: "10px 40px" }}></th>
-
                     <th
                       style={{
                         padding: "10px",
@@ -374,7 +385,6 @@ export default function SummerGolfLeagueWebsite() {
                     >
                       Wins
                     </th>
-
                     <th
                       style={{
                         padding: "10px",
@@ -383,7 +393,6 @@ export default function SummerGolfLeagueWebsite() {
                     >
                       Losses
                     </th>
-
                     <th
                       style={{
                         padding: "10px",
@@ -392,7 +401,6 @@ export default function SummerGolfLeagueWebsite() {
                     >
                       Draws
                     </th>
-
                     <th
                       style={{
                         padding: "10px",
@@ -401,11 +409,9 @@ export default function SummerGolfLeagueWebsite() {
                     >
                       +/−
                     </th>
-
                     <th style={{ padding: "10px" }}>Points</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {sorted.map((team, index) => (
                     <tr
@@ -421,7 +427,6 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         #{index + 1}
                       </td>
-
                       <td
                         style={{
                           padding: "12px",
@@ -431,7 +436,6 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         {team.name}
                       </td>
-
                       <td
                         style={{
                           padding: "12px",
@@ -443,9 +447,7 @@ export default function SummerGolfLeagueWebsite() {
                           ? team.players.join(" & ")
                           : "—"}
                       </td>
-
                       <td style={{ padding: "12px 40px" }}></td>
-
                       <td
                         style={{
                           padding: "12px",
@@ -455,7 +457,6 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         {team.wins ?? 0}
                       </td>
-
                       <td
                         style={{
                           padding: "12px",
@@ -465,7 +466,6 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         {team.losses ?? 0}
                       </td>
-
                       <td
                         style={{
                           padding: "12px",
@@ -475,7 +475,6 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         {team.draws ?? 0}
                       </td>
-
                       <td
                         style={{
                           padding: "12px",
@@ -486,7 +485,6 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         {team.strokeDiff ?? 0}
                       </td>
-
                       <td
                         style={{
                           padding: "12px",
@@ -503,6 +501,7 @@ export default function SummerGolfLeagueWebsite() {
               </table>
             )}
           </div>
+        </section>
         </section>
 
         {/* TEAMS SECTION */}
@@ -585,6 +584,7 @@ export default function SummerGolfLeagueWebsite() {
                     borderRadius: "12px",
                   }}
                 />
+
                 <h3 style={{ fontSize: "22px", fontWeight: 800 }}>
                   {team.name}
                 </h3>
@@ -785,7 +785,6 @@ export default function SummerGolfLeagueWebsite() {
                 Upload Final Score
               </button>
 
-              {/* STATUS MESSAGE */}
               {submitStatus && (
                 <div
                   style={{
@@ -810,7 +809,6 @@ export default function SummerGolfLeagueWebsite() {
                 </div>
               )}
             </div>
-
             {/* RIGHT CARD — Bracket */}
             <div
               style={{
@@ -1024,6 +1022,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Week 1 — June 3
               </h3>
+
               <ul
                 style={{
                   marginLeft: "20px",
@@ -1046,6 +1045,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Week 2 — June 10
               </h3>
+
               <ul
                 style={{
                   marginLeft: "20px",
@@ -1068,6 +1068,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Week 3 — June 17
               </h3>
+
               <ul
                 style={{
                   marginLeft: "20px",
@@ -1090,6 +1091,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Week 4 — June 24
               </h3>
+
               <ul
                 style={{
                   marginLeft: "20px",
@@ -1112,6 +1114,7 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Week 5 — July 1
               </h3>
+
               <ul
                 style={{
                   marginLeft: "20px",

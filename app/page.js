@@ -43,7 +43,7 @@ export default function SummerGolfLeagueWebsite() {
     setLoading(true);
 
     const { data, error } = await supabase
-      .from("Teams")
+      .from("teams")   // CORRECT
       .select("*")
       .order("points", { ascending: false });
 
@@ -66,22 +66,18 @@ export default function SummerGolfLeagueWebsite() {
   }
 
   async function submitMatch() {
-    // Validation
-    if (!winner || winner === "Select Winning Team") {
+    if (!winner) {
       setSubmitStatus("❌ Please select a winning team.");
       return;
     }
-
-    if (!opponent || opponent === "Select Opponent") {
+    if (!opponent) {
       setSubmitStatus("❌ Please select an opponent.");
       return;
     }
-
     if (winner === opponent) {
       setSubmitStatus("❌ Winner and opponent cannot be the same team.");
       return;
     }
-
     if (winnerScore === "" || loserScore === "") {
       setSubmitStatus("❌ Please enter both scores.");
       return;
@@ -96,29 +92,29 @@ export default function SummerGolfLeagueWebsite() {
     }
 
     if (w > l) {
-      setSubmitStatus("❌ In golf, the winner has a LOWER score. Please check your scores.");
+      setSubmitStatus("❌ In golf, the winner has a LOWER score.");
       return;
     }
 
     setSubmitStatus("⏳ Saving...");
 
-    const winningTeam = teams.find((t) => t.name.trim() === winner.trim());
-    const losingTeam = teams.find((t) => t.name.trim() === opponent.trim());
+    const winningTeam = teams.find((t) => t.name === winner);
+    const losingTeam = teams.find((t) => t.name === opponent);
 
     if (!winningTeam || !losingTeam) {
-      setSubmitStatus("❌ Could not find team data. Try refreshing.");
+      setSubmitStatus("❌ Could not find team data.");
       return;
     }
 
     const diff = Math.abs(l - w);
 
     if (w === l) {
-      // DRAW — both teams get 1 point, no stroke diff change
+      // DRAW
       const { error: e1 } = await supabase
-        .from("Teams")
+        .from("teams")
         .update({
-          draws: (winningTeam.draws ?? 0) + 1,
-          points: (winningTeam.points ?? 0) + 1,
+          draws: winningTeam.draws + 1,
+          points: winningTeam.points + 1,
         })
         .eq("name", winner);
 
@@ -128,10 +124,10 @@ export default function SummerGolfLeagueWebsite() {
       }
 
       const { error: e2 } = await supabase
-        .from("Teams")
+        .from("teams")
         .update({
-          draws: (losingTeam.draws ?? 0) + 1,
-          points: (losingTeam.points ?? 0) + 1,
+          draws: losingTeam.draws + 1,
+          points: losingTeam.points + 1,
         })
         .eq("name", opponent);
 
@@ -140,14 +136,13 @@ export default function SummerGolfLeagueWebsite() {
         return;
       }
     } else {
-      // WIN — winner gets 3 points, loser gets 0
+      // WIN
       const { error: winErr } = await supabase
-        .from("Teams")
+        .from("teams")
         .update({
-          wins: (winningTeam.wins ?? 0) + 1,
-          points: (winningTeam.points ?? 0) + 3,
-          stroke_diff:
-            (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + diff,
+          wins: winningTeam.wins + 1,
+          points: winningTeam.points + 3,
+          stroke_diff: winningTeam.strokeDiff + diff,
         })
         .eq("name", winner);
 
@@ -157,11 +152,10 @@ export default function SummerGolfLeagueWebsite() {
       }
 
       const { error: lossErr } = await supabase
-        .from("Teams")
+        .from("teams")
         .update({
-          losses: (losingTeam.losses ?? 0) + 1,
-          stroke_diff:
-            (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - diff,
+          losses: losingTeam.losses + 1,
+          stroke_diff: losingTeam.strokeDiff - diff,
         })
         .eq("name", opponent);
 
@@ -252,22 +246,13 @@ export default function SummerGolfLeagueWebsite() {
             <a href="#" style={{ color: "inherit", textDecoration: "none" }}>
               Home
             </a>
-            <a
-              href="#standings"
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
+            <a href="#standings" style={{ color: "inherit", textDecoration: "none" }}>
               Standings
             </a>
-            <a
-              href="#schedule"
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
+            <a href="#schedule" style={{ color: "inherit", textDecoration: "none" }}>
               Schedule
             </a>
-            <a
-              href="#submit"
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
+            <a href="#submit" style={{ color: "inherit", textDecoration: "none" }}>
               Submit Score
             </a>
           </nav>
@@ -305,9 +290,7 @@ export default function SummerGolfLeagueWebsite() {
               justifyContent: "space-between",
             }}
           >
-            <h2 style={{ fontSize: "22px", fontWeight: 800 }}>
-              Live Standings
-            </h2>
+            <h2 style={{ fontSize: "22px", fontWeight: 800 }}>Live Standings</h2>
 
             <div
               style={{
@@ -350,72 +333,35 @@ export default function SummerGolfLeagueWebsite() {
                       borderBottom: "2px solid #cbd5e1",
                     }}
                   >
-                    <th
-                      style={{
-                        padding: "10px",
-                        borderRight: "2px solid #cbd5e1",
-                      }}
-                    >
+                    <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>
                       Rank
                     </th>
-                    <th
-                      style={{
-                        padding: "10px",
-                        borderRight: "2px solid #cbd5e1",
-                      }}
-                    >
+                    <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>
                       Team
                     </th>
-                    <th
-                      style={{
-                        padding: "10px",
-                        borderRight: "2px solid #cbd5e1",
-                      }}
-                    >
+                    <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>
                       Players
                     </th>
                     <th style={{ padding: "10px 40px" }}></th>
-                    <th
-                      style={{
-                        padding: "10px",
-                        borderRight: "2px solid #cbd5e1",
-                      }}
-                    >
+                    <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>
                       Wins
                     </th>
-                    <th
-                      style={{
-                        padding: "10px",
-                        borderRight: "2px solid #cbd5e1",
-                      }}
-                    >
+                    <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>
                       Losses
                     </th>
-                    <th
-                      style={{
-                        padding: "10px",
-                        borderRight: "2px solid #cbd5e1",
-                      }}
-                    >
+                    <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>
                       Draws
                     </th>
-                    <th
-                      style={{
-                        padding: "10px",
-                        borderRight: "2px solid #cbd5e1",
-                      }}
-                    >
+                    <th style={{ padding: "10px", borderRight: "2px solid #cbd5e1" }}>
                       +/−
                     </th>
                     <th style={{ padding: "10px" }}>Points</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {sorted.map((team, index) => (
-                    <tr
-                      key={team.name}
-                      style={{ borderBottom: "2px solid #cbd5e1" }}
-                    >
+                    <tr key={team.name} style={{ borderBottom: "2px solid #cbd5e1" }}>
                       <td
                         style={{
                           padding: "12px",
@@ -425,6 +371,7 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         #{index + 1}
                       </td>
+
                       <td
                         style={{
                           padding: "12px",
@@ -434,6 +381,7 @@ export default function SummerGolfLeagueWebsite() {
                       >
                         {team.name}
                       </td>
+
                       <td
                         style={{
                           padding: "12px",
@@ -441,11 +389,11 @@ export default function SummerGolfLeagueWebsite() {
                           color: "#475569",
                         }}
                       >
-                        {team.players?.length
-                          ? team.players.join(" & ")
-                          : "—"}
+                        {team.players?.length ? team.players.join(" & ") : "—"}
                       </td>
+
                       <td style={{ padding: "12px 40px" }}></td>
+
                       <td
                         style={{
                           padding: "12px",
@@ -453,8 +401,9 @@ export default function SummerGolfLeagueWebsite() {
                           textAlign: "center",
                         }}
                       >
-                        {team.wins ?? 0}
+                        {team.wins}
                       </td>
+
                       <td
                         style={{
                           padding: "12px",
@@ -462,8 +411,9 @@ export default function SummerGolfLeagueWebsite() {
                           textAlign: "center",
                         }}
                       >
-                        {team.losses ?? 0}
+                        {team.losses}
                       </td>
+
                       <td
                         style={{
                           padding: "12px",
@@ -471,8 +421,9 @@ export default function SummerGolfLeagueWebsite() {
                           textAlign: "center",
                         }}
                       >
-                        {team.draws ?? 0}
+                        {team.draws}
                       </td>
+
                       <td
                         style={{
                           padding: "12px",
@@ -481,8 +432,9 @@ export default function SummerGolfLeagueWebsite() {
                           fontWeight: 600,
                         }}
                       >
-                        {team.strokeDiff ?? 0}
+                        {team.strokeDiff}
                       </td>
+
                       <td
                         style={{
                           padding: "12px",
@@ -491,7 +443,7 @@ export default function SummerGolfLeagueWebsite() {
                           color: "#166534",
                         }}
                       >
-                        {team.points ?? 0}
+                        {team.points}
                       </td>
                     </tr>
                   ))}
@@ -853,24 +805,14 @@ export default function SummerGolfLeagueWebsite() {
                         borderBottom: "2px solid #cbd5e1",
                       }}
                     >
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 700,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 700 }}>
                         Play‑In Round
                       </td>
                       <td></td>
                     </tr>
 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
                         #{sorted.indexOf(seed3) + 1} {seed3.name}
                       </td>
                       <td style={{ padding: "12px" }}>
@@ -879,12 +821,7 @@ export default function SummerGolfLeagueWebsite() {
                     </tr>
 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
                         #{sorted.indexOf(seed4) + 1} {seed4.name}
                       </td>
                       <td style={{ padding: "12px" }}>
@@ -899,24 +836,14 @@ export default function SummerGolfLeagueWebsite() {
                         borderBottom: "2px solid #cbd5e1",
                       }}
                     >
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 700,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 700 }}>
                         Semifinals
                       </td>
                       <td></td>
                     </tr>
 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
                         #{sorted.indexOf(seed1) + 1} {seed1.name}
                       </td>
                       <td style={{ padding: "12px" }}>
@@ -926,12 +853,7 @@ export default function SummerGolfLeagueWebsite() {
                     </tr>
 
                     <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
                         #{sorted.indexOf(seed2) + 1} {seed2.name}
                       </td>
                       <td style={{ padding: "12px" }}>
@@ -947,24 +869,14 @@ export default function SummerGolfLeagueWebsite() {
                         borderBottom: "2px solid #cbd5e1",
                       }}
                     >
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 700,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 700 }}>
                         Championship
                       </td>
                       <td></td>
                     </tr>
 
                     <tr>
-                      <td
-                        style={{
-                          padding: "12px",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
                         Winner
                       </td>
                       <td style={{ padding: "12px" }}>
@@ -1020,12 +932,7 @@ export default function SummerGolfLeagueWebsite() {
                 Week 1 — June 3
               </h3>
 
-              <ul
-                style={{
-                  marginLeft: "20px",
-                  marginTop: "8px",
-                }}
-              >
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
                 <li>Banana Hammocks vs The Nursery</li>
                 <li>Smoove Operators vs Brown Nosers</li>
                 <li>Greenside Gamblers vs Shock Tops</li>
@@ -1043,12 +950,7 @@ export default function SummerGolfLeagueWebsite() {
                 Week 2 — June 10
               </h3>
 
-              <ul
-                style={{
-                  marginLeft: "20px",
-                  marginTop: "8px",
-                }}
-              >
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
                 <li>Banana Hammocks vs Smoove Operators</li>
                 <li>The Nursery vs Greenside Gamblers</li>
                 <li>Brown Nosers vs Shock Tops</li>
@@ -1066,12 +968,7 @@ export default function SummerGolfLeagueWebsite() {
                 Week 3 — June 17
               </h3>
 
-              <ul
-                style={{
-                  marginLeft: "20px",
-                  marginTop: "8px",
-                }}
-              >
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
                 <li>Banana Hammocks vs Brown Nosers</li>
                 <li>Smoove Operators vs Shock Tops</li>
                 <li>The Nursery vs Greenside Gamblers</li>
@@ -1089,12 +986,7 @@ export default function SummerGolfLeagueWebsite() {
                 Week 4 — June 24
               </h3>
 
-              <ul
-                style={{
-                  marginLeft: "20px",
-                  marginTop: "8px",
-                }}
-              >
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
                 <li>Banana Hammocks vs Greenside Gamblers</li>
                 <li>Brown Nosers vs The Nursery</li>
                 <li>Smoove Operators vs Shock Tops</li>
@@ -1112,12 +1004,7 @@ export default function SummerGolfLeagueWebsite() {
                 Week 5 — July 1
               </h3>
 
-              <ul
-                style={{
-                  marginLeft: "20px",
-                  marginTop: "8px",
-                }}
-              >
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
                 <li>Banana Hammocks vs Shock Tops</li>
                 <li>Smoove Operators vs The Nursery</li>
                 <li>Brown Nosers vs Greenside Gamblers</li>

@@ -85,15 +85,14 @@ export default function SummerGolfLeagueWebsite() {
       return;
     }
 
-    // In golf, LOWER score wins. winnerScore = winner's strokes, loserScore = loser's strokes.
-    const w = Number(winnerScore); // winner's strokes (lower)
-    const l = Number(loserScore);  // loser's strokes (higher)
+    const w = Number(winnerScore);
+    const l = Number(loserScore);
 
     if (isNaN(w) || isNaN(l)) {
       setSubmitStatus("❌ Scores must be numbers.");
       return;
     }
-    if (w >= l) {
+    if (w > l) {
       setSubmitStatus("❌ In golf, the winner has a LOWER score. Please check your scores.");
       return;
     }
@@ -108,33 +107,52 @@ export default function SummerGolfLeagueWebsite() {
       return;
     }
 
-    const diff = l - w; // stroke difference
+    const diff = Math.abs(l - w);
 
-    const { error: winErr } = await supabase
-      .from("teams")
-      .update({
-        wins: (winningTeam.wins ?? 0) + 1,
-        points: (winningTeam.points ?? 0) + 3,
-        stroke_diff: (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + diff,
-      })
-      .eq("name", winner);
+    if (w === l) {
+      // DRAW — both teams get 1 point, no stroke diff change
+      const { error: e1 } = await supabase
+        .from("teams")
+        .update({
+          draws: (winningTeam.draws ?? 0) + 1,
+          points: (winningTeam.points ?? 0) + 1,
+        })
+        .eq("name", winner);
 
-    if (winErr) {
-      setSubmitStatus("❌ Error saving winner: " + winErr.message);
-      return;
-    }
+      if (e1) { setSubmitStatus("❌ Error saving draw: " + e1.message); return; }
 
-    const { error: lossErr } = await supabase
-      .from("teams")
-      .update({
-        losses: (losingTeam.losses ?? 0) + 1,
-        stroke_diff: (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - diff,
-      })
-      .eq("name", opponent);
+      const { error: e2 } = await supabase
+        .from("teams")
+        .update({
+          draws: (losingTeam.draws ?? 0) + 1,
+          points: (losingTeam.points ?? 0) + 1,
+        })
+        .eq("name", opponent);
 
-    if (lossErr) {
-      setSubmitStatus("❌ Error saving opponent: " + lossErr.message);
-      return;
+      if (e2) { setSubmitStatus("❌ Error saving draw: " + e2.message); return; }
+
+    } else {
+      // WIN — winner gets 3 points, loser gets 0
+      const { error: winErr } = await supabase
+        .from("teams")
+        .update({
+          wins: (winningTeam.wins ?? 0) + 1,
+          points: (winningTeam.points ?? 0) + 3,
+          stroke_diff: (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + diff,
+        })
+        .eq("name", winner);
+
+      if (winErr) { setSubmitStatus("❌ Error saving winner: " + winErr.message); return; }
+
+      const { error: lossErr } = await supabase
+        .from("teams")
+        .update({
+          losses: (losingTeam.losses ?? 0) + 1,
+          stroke_diff: (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - diff,
+        })
+        .eq("name", opponent);
+
+      if (lossErr) { setSubmitStatus("❌ Error saving opponent: " + lossErr.message); return; }
     }
 
     setWinner("");

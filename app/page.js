@@ -46,7 +46,8 @@ export default function SummerGolfLeagueWebsite() {
     const { data, error } = await supabase
       .from("teams")
       .select("*")
-      .order("points", { ascending: false });
+      .order("points", { ascending: false })
+      .order("wins", { ascending: false });
 
     const base =
       !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;

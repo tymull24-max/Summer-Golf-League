@@ -29,6 +29,7 @@ const DEFAULT_TEAMS_FALLBACK = [
 export default function SummerGolfLeagueWebsite() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitStatus, setSubmitStatus] = useState(""); // feedback message
 
   const [winner, setWinner] = useState("");
   const [opponent, setOpponent] = useState("");
@@ -66,75 +67,85 @@ export default function SummerGolfLeagueWebsite() {
   }
 
   async function submitMatch() {
-    if (!winner || !opponent || winner === opponent) return;
-
-    const w = Number(winnerScore);
-    const l = Number(loserScore);
-
-    if (isNaN(w) || isNaN(l)) return;
-
-    const winningTeam = teams.find(
-      (t) => t.name.trim() === winner.trim()
-    );
-    const losingTeam = teams.find(
-      (t) => t.name.trim() === opponent.trim()
-    );
-
-    if (!winningTeam || !losingTeam) return;
-
-    // DRAW
-    if (w === l) {
-      await supabase
-        .from("teams")
-        .update({
-          draws: (winningTeam.draws ?? 0) + 1,
-          points: (winningTeam.points ?? 0) + 1,
-        })
-        .eq("name", winner);
-
-      await supabase
-        .from("teams")
-        .update({
-          draws: (losingTeam.draws ?? 0) + 1,
-          points: (losingTeam.points ?? 0) + 1,
-        })
-        .eq("name", opponent);
+    // Validation
+    if (!winner || winner === "Select Winning Team") {
+      setSubmitStatus("❌ Please select a winning team.");
+      return;
+    }
+    if (!opponent || opponent === "Select Opponent") {
+      setSubmitStatus("❌ Please select an opponent.");
+      return;
+    }
+    if (winner === opponent) {
+      setSubmitStatus("❌ Winner and opponent cannot be the same team.");
+      return;
+    }
+    if (winnerScore === "" || loserScore === "") {
+      setSubmitStatus("❌ Please enter both scores.");
+      return;
     }
 
-    // WINNER HAS LOWER SCORE (GOLF LOGIC)
-    if (w < l) {
-      const diff = l - w;
+    // In golf, LOWER score wins. winnerScore = winner's strokes, loserScore = loser's strokes.
+    const w = Number(winnerScore); // winner's strokes (lower)
+    const l = Number(loserScore);  // loser's strokes (higher)
 
-      await supabase
-        .from("teams")
-        .update({
-          wins: (winningTeam.wins ?? 0) + 1,
-          points: (winningTeam.points ?? 0) + 3,
-          stroke_diff:
-            (winningTeam.strokeDiff ??
-              winningTeam.stroke_diff ??
-              0) + diff,
-        })
-        .eq("name", winner);
+    if (isNaN(w) || isNaN(l)) {
+      setSubmitStatus("❌ Scores must be numbers.");
+      return;
+    }
+    if (w >= l) {
+      setSubmitStatus("❌ In golf, the winner has a LOWER score. Please check your scores.");
+      return;
+    }
 
-      await supabase
-        .from("teams")
-        .update({
-          losses: (losingTeam.losses ?? 0) + 1,
-          stroke_diff:
-            (losingTeam.strokeDiff ??
-              losingTeam.stroke_diff ??
-              0) - diff,
-        })
-        .eq("name", opponent);
+    setSubmitStatus("⏳ Saving...");
+
+    const winningTeam = teams.find((t) => t.name.trim() === winner.trim());
+    const losingTeam = teams.find((t) => t.name.trim() === opponent.trim());
+
+    if (!winningTeam || !losingTeam) {
+      setSubmitStatus("❌ Could not find team data. Try refreshing.");
+      return;
+    }
+
+    const diff = l - w; // stroke difference
+
+    const { error: winErr } = await supabase
+      .from("teams")
+      .update({
+        wins: (winningTeam.wins ?? 0) + 1,
+        points: (winningTeam.points ?? 0) + 3,
+        stroke_diff: (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + diff,
+      })
+      .eq("name", winner);
+
+    if (winErr) {
+      setSubmitStatus("❌ Error saving winner: " + winErr.message);
+      return;
+    }
+
+    const { error: lossErr } = await supabase
+      .from("teams")
+      .update({
+        losses: (losingTeam.losses ?? 0) + 1,
+        stroke_diff: (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - diff,
+      })
+      .eq("name", opponent);
+
+    if (lossErr) {
+      setSubmitStatus("❌ Error saving opponent: " + lossErr.message);
+      return;
     }
 
     setWinner("");
     setOpponent("");
     setWinnerScore("");
     setLoserScore("");
+    setSubmitStatus("✅ Score saved successfully!");
 
     fetchTeams();
+
+    setTimeout(() => setSubmitStatus(""), 4000);
   }
 
   const sorted = [...teams].sort(
@@ -667,7 +678,7 @@ export default function SummerGolfLeagueWebsite() {
                           type="number"
                           value={winnerScore}
                           onChange={(e) => setWinnerScore(e.target.value)}
-                          placeholder="Enter winner score"
+                          placeholder="Winner's strokes (lower)"
                           style={{
                             width: "100%",
                             padding: "8px",
@@ -724,7 +735,7 @@ export default function SummerGolfLeagueWebsite() {
                           type="number"
                           value={loserScore}
                           onChange={(e) => setLoserScore(e.target.value)}
-                          placeholder="Enter loser score"
+                          placeholder="Loser's strokes (higher)"
                           style={{
                             width: "100%",
                             padding: "8px",
@@ -754,6 +765,31 @@ export default function SummerGolfLeagueWebsite() {
               >
                 Upload Final Score
               </button>
+
+              {/* STATUS MESSAGE */}
+              {submitStatus && (
+                <div
+                  style={{
+                    marginTop: "12px",
+                    padding: "10px 14px",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    backgroundColor: submitStatus.startsWith("✅")
+                      ? "#dcfce7"
+                      : submitStatus.startsWith("⏳")
+                      ? "#fefce8"
+                      : "#fee2e2",
+                    color: submitStatus.startsWith("✅")
+                      ? "#166534"
+                      : submitStatus.startsWith("⏳")
+                      ? "#854d0e"
+                      : "#991b1b",
+                  }}
+                >
+                  {submitStatus}
+                </div>
+              )}
             </div>
 
             {/* RIGHT CARD — Bracket */}

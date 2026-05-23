@@ -17,6 +17,16 @@ const DEFAULT_PLAYERS = {
   "Shock Tops": ["Jack Behnfeldt", "Cole Keefer"],
 };
 
+// Local fallback if Supabase has no rows
+const DEFAULT_TEAMS_FALLBACK = [
+  { name: "Banana Hammocks", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Smoove Operators", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Brown Nosers", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "The Nursery", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Greenside Gamblers", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+  { name: "Shock Tops", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
+];
+
 export default function SummerGolfLeagueWebsite() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,15 +48,20 @@ export default function SummerGolfLeagueWebsite() {
       .select("*")
       .order("points", { ascending: false });
 
-    if (!error && data) {
-      setTeams(
-        data.map((t) => ({
-          ...t,
-          players: DEFAULT_PLAYERS[t.name] || [],
-          strokeDiff: t.stroke_diff,
-        }))
-      );
-    }
+    const base =
+      !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;
+
+    setTeams(
+      base.map((t) => ({
+        ...t,
+        players: DEFAULT_PLAYERS[t.name] || ["Unknown", "Unknown"],
+        wins: t.wins ?? 0,
+        losses: t.losses ?? 0,
+        draws: t.draws ?? 0,
+        points: t.points ?? 0,
+        strokeDiff: t.stroke_diff ?? 0,
+      }))
+    );
 
     setLoading(false);
   }
@@ -70,33 +85,33 @@ export default function SummerGolfLeagueWebsite() {
       await supabase
         .from("teams")
         .update({
-          draws: winningTeam.draws + 1,
-          points: winningTeam.points + 1,
+          draws: (winningTeam.draws ?? 0) + 1,
+          points: (winningTeam.points ?? 0) + 1,
         })
         .eq("name", winner);
 
       await supabase
         .from("teams")
         .update({
-          draws: losingTeam.draws + 1,
-          points: losingTeam.points + 1,
+          draws: (losingTeam.draws ?? 0) + 1,
+          points: (losingTeam.points ?? 0) + 1,
         })
         .eq("name", opponent);
     } else if (w < l) {
       await supabase
         .from("teams")
         .update({
-          wins: winningTeam.wins + 1,
-          points: winningTeam.points + 3,
-          stroke_diff: winningTeam.stroke_diff + Math.abs(diff),
+          wins: (winningTeam.wins ?? 0) + 1,
+          points: (winningTeam.points ?? 0) + 3,
+          stroke_diff: (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + Math.abs(diff),
         })
         .eq("name", winner);
 
       await supabase
         .from("teams")
         .update({
-          losses: losingTeam.losses + 1,
-          stroke_diff: losingTeam.stroke_diff - Math.abs(diff),
+          losses: (losingTeam.losses ?? 0) + 1,
+          stroke_diff: (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - Math.abs(diff),
         })
         .eq("name", opponent);
     }
@@ -109,7 +124,9 @@ export default function SummerGolfLeagueWebsite() {
     fetchTeams();
   }
 
-  const sorted = [...teams].sort((a, b) => b.points - a.points);
+  const sorted = [...teams].sort(
+    (a, b) => (b.points ?? 0) - (a.points ?? 0)
+  );
 
   const seed1 = sorted[0] || {};
   const seed2 = sorted[1] || {};
@@ -382,7 +399,9 @@ export default function SummerGolfLeagueWebsite() {
                           color: "#475569",
                         }}
                       >
-                        {team.players?.join(" & ")}
+                        {team.players?.length
+                          ? team.players.join(" & ")
+                          : "—"}
                       </td>
 
                       {/* Spacer */}
@@ -396,7 +415,7 @@ export default function SummerGolfLeagueWebsite() {
                           textAlign: "center",
                         }}
                       >
-                        {team.wins}
+                        {team.wins ?? 0}
                       </td>
 
                       {/* Losses */}
@@ -407,7 +426,7 @@ export default function SummerGolfLeagueWebsite() {
                           textAlign: "center",
                         }}
                       >
-                        {team.losses}
+                        {team.losses ?? 0}
                       </td>
 
                       {/* Draws */}
@@ -418,7 +437,7 @@ export default function SummerGolfLeagueWebsite() {
                           textAlign: "center",
                         }}
                       >
-                        {team.draws}
+                        {team.draws ?? 0}
                       </td>
 
                       {/* Stroke diff */}
@@ -430,7 +449,7 @@ export default function SummerGolfLeagueWebsite() {
                           fontWeight: 600,
                         }}
                       >
-                        {team.strokeDiff}
+                        {team.strokeDiff ?? 0}
                       </td>
 
                       {/* Points */}
@@ -442,7 +461,7 @@ export default function SummerGolfLeagueWebsite() {
                           color: "#166534",
                         }}
                       >
-                        {team.points}
+                        {team.points ?? 0}
                       </td>
                     </tr>
                   ))}

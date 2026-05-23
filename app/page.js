@@ -1,71 +1,54 @@
 "use client";
  
-import { useState } from "react";
- 
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
+
+const DEFAULT_PLAYERS = {
+  "Banana Hammocks": ["Tyler Mull", "Marco Morrison"],
+  "Smoove Operators": ["Paul Carr", "Grant Dzierwa"],
+  "Brown Nosers": ["Ben Seals", "Austin Radwanski"],
+  "The Nursery": ["Zach Kemmer", "Tommy Ling"],
+  "Greenside Gamblers": ["Max Walton", "Jackson Fitzgerald"],
+  "Shock Tops": ["Jack Behnfeldt", "Cole Keefer"],
+};
+
 export default function SummerGolfLeagueWebsite() {
-  const [teams, setTeams] = useState([
-    {
-      name: "Banana Hammocks",
-      players: ["Tyler Mull", "Marco Morrison"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Smoove Operators",
-      players: ["Paul Carr", "Grant Dzierwa"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Brown Nosers",
-      players: ["Ben Seals", "Austin Radwanski"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "The Nursery",
-      players: ["Zach Kemmer", "Tommy Ling"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Greenside Gamblers",
-      players: ["Max Walton", "Jackson Fitzgerald"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-    {
-      name: "Shock Tops",
-      players: ["Jack Behnfeldt", "Cole Keefer"],
-      wins: 0,
-      losses: 0,
-      draws: 0,
-      strokeDiff: 0,
-      points: 0,
-    },
-  ]);
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
  
   const [winner, setWinner] = useState("");
   const [opponent, setOpponent] = useState("");
   const [winnerScore, setWinnerScore] = useState("");
   const [loserScore, setLoserScore] = useState("");
+
+  useEffect(() => {
+    fetchTeams();
+  }, []);
+
+  async function fetchTeams() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("teams")
+      .select("*")
+      .order("points", { ascending: false });
+    if (!error && data) {
+      setTeams(
+        data.map((t) => ({
+          ...t,
+          players: DEFAULT_PLAYERS[t.name] || [],
+          strokeDiff: t.stroke_diff,
+        }))
+      );
+    }
+    setLoading(false);
+  }
  
-  function submitMatch() {
+  async function submitMatch() {
     if (!winner || !opponent || winner === opponent) return;
  
     const w = parseInt(winnerScore);
@@ -73,49 +56,48 @@ export default function SummerGolfLeagueWebsite() {
     if (isNaN(w) || isNaN(l)) return;
  
     const diff = l - w;
- 
-    setTeams((prev) =>
-      prev.map((team) => {
-        if (team.name === winner && w < l) {
-          return {
-            ...team,
-            wins: team.wins + 1,
-            points: team.points + 3,
-            strokeDiff: team.strokeDiff + diff,
-          };
-        }
-        if (team.name === opponent && w < l) {
-          return {
-            ...team,
-            losses: team.losses + 1,
-            strokeDiff: team.strokeDiff - diff,
-          };
-        }
-        if (w === l && (team.name === winner || team.name === opponent)) {
-          return {
-            ...team,
-            draws: team.draws + 1,
-            points: team.points + 1,
-          };
-        }
-        return team;
-      })
-    );
+
+    const winningTeam = teams.find((t) => t.name === winner);
+    const losingTeam = teams.find((t) => t.name === opponent);
+    if (!winningTeam || !losingTeam) return;
+
+    if (w === l) {
+      await supabase.from("teams").update({
+        draws: winningTeam.draws + 1,
+        points: winningTeam.points + 1,
+      }).eq("name", winner);
+      await supabase.from("teams").update({
+        draws: losingTeam.draws + 1,
+        points: losingTeam.points + 1,
+      }).eq("name", opponent);
+    } else if (w < l) {
+      await supabase.from("teams").update({
+        wins: winningTeam.wins + 1,
+        points: winningTeam.points + 3,
+        stroke_diff: winningTeam.stroke_diff + Math.abs(diff),
+      }).eq("name", winner);
+      await supabase.from("teams").update({
+        losses: losingTeam.losses + 1,
+        stroke_diff: losingTeam.stroke_diff - Math.abs(diff),
+      }).eq("name", opponent);
+    }
  
     setWinner("");
     setOpponent("");
     setWinnerScore("");
     setLoserScore("");
+
+    fetchTeams();
   }
  
   const sorted = [...teams].sort((a, b) => b.points - a.points);
  
-  const seed1 = sorted[0];
-  const seed2 = sorted[1];
-  const seed3 = sorted[2];
-  const seed4 = sorted[3];
-  const seed5 = sorted[4];
-  const seed6 = sorted[5];
+  const seed1 = sorted[0] || {};
+  const seed2 = sorted[1] || {};
+  const seed3 = sorted[2] || {};
+  const seed4 = sorted[3] || {};
+  const seed5 = sorted[4] || {};
+  const seed6 = sorted[5] || {};
  
   return (
     <div
@@ -250,6 +232,11 @@ export default function SummerGolfLeagueWebsite() {
           </div>
  
           <div style={{ width: "100%", overflowX: "auto" }}>
+            {loading ? (
+              <div style={{ padding: "24px", textAlign: "center", color: "#64748b", fontSize: "14px" }}>
+                Loading standings...
+              </div>
+            ) : (
             <table
               style={{
                 width: "100%",
@@ -410,6 +397,7 @@ export default function SummerGolfLeagueWebsite() {
                 ))}
               </tbody>
             </table>
+            )}
           </div>
         </section>
  
@@ -1008,4 +996,3 @@ export default function SummerGolfLeagueWebsite() {
     </div>
   );
 }
- 

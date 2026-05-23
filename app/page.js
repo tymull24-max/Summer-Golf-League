@@ -1,190 +1,261 @@
-"use client";
+            {/* RIGHT CARD — Bracket */}
+            <div
+              style={{
+                backgroundColor: "white",
+                color: "#0f172a",
+                borderRadius: "16px",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                padding: "24px",
+                width: "100%",
+                maxWidth: "420px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "22px",
+                  fontWeight: 800,
+                  marginBottom: "16px",
+                }}
+              >
+                Tournament Bracket
+              </h2>
 
-import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
+              <div
+                style={{
+                  width: "100%",
+                  border: "2px solid #cbd5e1",
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: "14px",
+                  }}
+                >
+                  <tbody>
+                    {/* Play-In */}
+                    <tr
+                      style={{
+                        background: "#f8fafc",
+                        borderBottom: "2px solid #cbd5e1",
+                      }}
+                    >
+                      <td style={{ padding: "12px", fontWeight: 700 }}>
+                        Play‑In Round
+                      </td>
+                      <td></td>
+                    </tr>
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
+                        #{sorted.indexOf(seed3) + 1} {seed3.name}
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        vs #{sorted.indexOf(seed6) + 1} {seed6.name}
+                      </td>
+                    </tr>
 
-const DEFAULT_PLAYERS = {
-  "Banana Hammocks": ["Tyler Mull", "Marco Morrison"],
-  "Smoove Operators": ["Paul Carr", "Grant Dzierwa"],
-  "Brown Nosers": ["Ben Seals", "Austin Radwanski"],
-  "The Nursery": ["Zach Kemmer", "Tommy Ling"],
-  "Greenside Gamblers": ["Max Walton", "Jackson Fitzgerald"],
-  "Shock Tops": ["Jack Behnfeldt", "Cole Keefer"],
-};
+                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
+                        #{sorted.indexOf(seed4) + 1} {seed4.name}
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        vs #{sorted.indexOf(seed5) + 1} {seed5.name}
+                      </td>
+                    </tr>
 
-const DEFAULT_TEAMS_FALLBACK = [
-  { name: "Banana Hammocks", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
-  { name: "Smoove Operators", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
-  { name: "Brown Nosers", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
-  { name: "The Nursery", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
-  { name: "Greenside Gamblers", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
-  { name: "Shock Tops", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
-];
+                    {/* Semifinals */}
+                    <tr
+                      style={{
+                        background: "#f8fafc",
+                        borderBottom: "2px solid #cbd5e1",
+                      }}
+                    >
+                      <td style={{ padding: "12px", fontWeight: 700 }}>
+                        Semifinals
+                      </td>
+                      <td></td>
+                    </tr>
 
-export default function SummerGolfLeagueWebsite() {
-  const [teams, setTeams] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [submitStatus, setSubmitStatus] = useState("");
-  const [winner, setWinner] = useState("");
-  const [opponent, setOpponent] = useState("");
-  const [winnerScore, setWinnerScore] = useState("");
-  const [loserScore, setLoserScore] = useState("");
+                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
+                        #{sorted.indexOf(seed1) + 1} {seed1.name}
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        vs Winner of #{sorted.indexOf(seed4) + 1} /{" "}
+                        {sorted.indexOf(seed5) + 1}
+                      </td>
+                    </tr>
 
-  useEffect(() => {
-    fetchTeams();
-  }, []);
+                    <tr style={{ borderBottom: "2px solid #cbd5e1" }}>
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
+                        #{sorted.indexOf(seed2) + 1} {seed2.name}
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        vs Winner of #{sorted.indexOf(seed3) + 1} /{" "}
+                        {sorted.indexOf(seed6) + 1}
+                      </td>
+                    </tr>
 
-  async function fetchTeams() {
-    setLoading(true);
+                    {/* Championship */}
+                    <tr
+                      style={{
+                        background: "#f8fafc",
+                        borderBottom: "2px solid #cbd5e1",
+                      }}
+                    >
+                      <td style={{ padding: "12px", fontWeight: 700 }}>
+                        Championship
+                      </td>
+                      <td></td>
+                    </tr>
 
-    const { data, error } = await supabase
-      .from("teams")   // CORRECT
-      .select("*")
-      .order("points", { ascending: false });
+                    <tr>
+                      <td style={{ padding: "12px", fontWeight: 600 }}>
+                        Winner
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        ________________________
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    const base =
-      !error && data && data.length > 0 ? data : DEFAULT_TEAMS_FALLBACK;
+        {/* SCHEDULE AT THE BOTTOM */}
+        <section
+          id="schedule"
+          style={{
+            backgroundColor: "white",
+            color: "#0f172a",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+            padding: "24px",
+            width: "100%",
+            marginTop: "40px",
+            marginBottom: "40px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "26px",
+              fontWeight: 900,
+              marginBottom: "16px",
+            }}
+          >
+            2026 Regular Season Schedule
+          </h2>
 
-    setTeams(
-      base.map((t) => ({
-        ...t,
-        players: DEFAULT_PLAYERS[t.name] || ["Unknown", "Unknown"],
-        wins: t.wins ?? 0,
-        losses: t.losses ?? 0,
-        draws: t.draws ?? 0,
-        points: t.points ?? 0,
-        strokeDiff: t.stroke_diff ?? 0,
-      }))
-    );
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "24px",
+            }}
+          >
+            <div>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 800,
+                  color: "#065f46",
+                }}
+              >
+                Week 1 — June 3
+              </h3>
 
-    setLoading(false);
-  }
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
+                <li>Banana Hammocks vs The Nursery</li>
+                <li>Smoove Operators vs Brown Nosers</li>
+                <li>Greenside Gamblers vs Shock Tops</li>
+              </ul>
+            </div>
 
-  async function submitMatch() {
-    if (!winner) {
-      setSubmitStatus("❌ Please select a winning team.");
-      return;
-    }
-    if (!opponent) {
-      setSubmitStatus("❌ Please select an opponent.");
-      return;
-    }
-    if (winner === opponent) {
-      setSubmitStatus("❌ Winner and opponent cannot be the same team.");
-      return;
-    }
-    if (winnerScore === "" || loserScore === "") {
-      setSubmitStatus("❌ Please enter both scores.");
-      return;
-    }
+            <div>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 800,
+                  color: "#065f46",
+                }}
+              >
+                Week 2 — June 10
+              </h3>
 
-    const w = Number(winnerScore);
-    const l = Number(loserScore);
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
+                <li>Banana Hammocks vs Smoove Operators</li>
+                <li>The Nursery vs Greenside Gamblers</li>
+                <li>Brown Nosers vs Shock Tops</li>
+              </ul>
+            </div>
 
-    if (isNaN(w) || isNaN(l)) {
-      setSubmitStatus("❌ Scores must be numbers.");
-      return;
-    }
+            <div>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 800,
+                  color: "#065f46",
+                }}
+              >
+                Week 3 — June 17
+              </h3>
 
-    if (w > l) {
-      setSubmitStatus("❌ In golf, the winner has a LOWER score.");
-      return;
-    }
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
+                <li>Banana Hammocks vs Brown Nosers</li>
+                <li>Smoove Operators vs Shock Tops</li>
+                <li>The Nursery vs Greenside Gamblers</li>
+              </ul>
+            </div>
 
-    setSubmitStatus("⏳ Saving...");
+            <div>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 800,
+                  color: "#065f46",
+                }}
+              >
+                Week 4 — June 24
+              </h3>
 
-    const winningTeam = teams.find((t) => t.name === winner);
-    const losingTeam = teams.find((t) => t.name === opponent);
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
+                <li>Banana Hammocks vs Greenside Gamblers</li>
+                <li>Brown Nosers vs The Nursery</li>
+                <li>Smoove Operators vs Shock Tops</li>
+              </ul>
+            </div>
 
-    if (!winningTeam || !losingTeam) {
-      setSubmitStatus("❌ Could not find team data.");
-      return;
-    }
+            <div>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 800,
+                  color: "#065f46",
+                }}
+              >
+                Week 5 — July 1
+              </h3>
 
-    const diff = Math.abs(l - w);
-
-    if (w === l) {
-      // DRAW
-      const { error: e1 } = await supabase
-        .from("teams")
-        .update({
-          draws: winningTeam.draws + 1,
-          points: winningTeam.points + 1,
-        })
-        .eq("name", winner);
-
-      if (e1) {
-        setSubmitStatus("❌ Error saving draw: " + e1.message);
-        return;
-      }
-
-      const { error: e2 } = await supabase
-        .from("teams")
-        .update({
-          draws: losingTeam.draws + 1,
-          points: losingTeam.points + 1,
-        })
-        .eq("name", opponent);
-
-      if (e2) {
-        setSubmitStatus("❌ Error saving draw: " + e2.message);
-        return;
-      }
-    } else {
-      // WIN
-      const { error: winErr } = await supabase
-        .from("teams")
-        .update({
-          wins: winningTeam.wins + 1,
-          points: winningTeam.points + 3,
-          stroke_diff: winningTeam.strokeDiff + diff,
-        })
-        .eq("name", winner);
-
-      if (winErr) {
-        setSubmitStatus("❌ Error saving winner: " + winErr.message);
-        return;
-      }
-
-      const { error: lossErr } = await supabase
-        .from("teams")
-        .update({
-          losses: losingTeam.losses + 1,
-          stroke_diff: losingTeam.strokeDiff - diff,
-        })
-        .eq("name", opponent);
-
-      if (lossErr) {
-        setSubmitStatus("❌ Error saving opponent: " + lossErr.message);
-        return;
-      }
-    }
-
-    setWinner("");
-    setOpponent("");
-    setWinnerScore("");
-    setLoserScore("");
-    setSubmitStatus("✅ Score saved successfully!");
-
-    fetchTeams();
-    setTimeout(() => setSubmitStatus(""), 4000);
-  }
-
-  const sorted = [...teams].sort(
-    (a, b) => (b.points ?? 0) - (a.points ?? 0)
+              <ul style={{ marginLeft: "20px", marginTop: "8px" }}>
+                <li>Banana Hammocks vs Shock Tops</li>
+                <li>Smoove Operators vs The Nursery</li>
+                <li>Brown Nosers vs Greenside Gamblers</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   );
-
-  const seed1 = sorted[0] || {};
-  const seed2 = sorted[1] || {};
-  const seed3 = sorted[2] || {};
-  const seed4 = sorted[3] || {};
-  const seed5 = sorted[4] || {};
-  const seed6 = sorted[5] || {};
+}
   return (
     <div
       style={{

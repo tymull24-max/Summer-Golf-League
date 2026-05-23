@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -30,7 +29,7 @@ const DEFAULT_TEAMS_FALLBACK = [
 export default function SummerGolfLeagueWebsite() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [submitStatus, setSubmitStatus] = useState(""); 
+  const [submitStatus, setSubmitStatus] = useState("");
   const [winner, setWinner] = useState("");
   const [opponent, setOpponent] = useState("");
   const [winnerScore, setWinnerScore] = useState("");
@@ -44,7 +43,7 @@ export default function SummerGolfLeagueWebsite() {
     setLoading(true);
 
     const { data, error } = await supabase
-      .from("Teams")   // FIXED
+      .from("Teams")
       .select("*")
       .order("points", { ascending: false });
 
@@ -67,6 +66,7 @@ export default function SummerGolfLeagueWebsite() {
   }
 
   async function submitMatch() {
+    // Validation
     if (!winner || winner === "Select Winning Team") {
       setSubmitStatus("❌ Please select a winning team.");
       return;
@@ -96,7 +96,7 @@ export default function SummerGolfLeagueWebsite() {
     }
 
     if (w > l) {
-      setSubmitStatus("❌ In golf, the winner has a LOWER score.");
+      setSubmitStatus("❌ In golf, the winner has a LOWER score. Please check your scores.");
       return;
     }
 
@@ -106,15 +106,16 @@ export default function SummerGolfLeagueWebsite() {
     const losingTeam = teams.find((t) => t.name.trim() === opponent.trim());
 
     if (!winningTeam || !losingTeam) {
-      setSubmitStatus("❌ Could not find team data.");
+      setSubmitStatus("❌ Could not find team data. Try refreshing.");
       return;
     }
 
     const diff = Math.abs(l - w);
 
     if (w === l) {
+      // DRAW — both teams get 1 point, no stroke diff change
       const { error: e1 } = await supabase
-        .from("Teams")   // FIXED
+        .from("Teams")
         .update({
           draws: (winningTeam.draws ?? 0) + 1,
           points: (winningTeam.points ?? 0) + 1,
@@ -127,7 +128,7 @@ export default function SummerGolfLeagueWebsite() {
       }
 
       const { error: e2 } = await supabase
-        .from("Teams")   // FIXED
+        .from("Teams")
         .update({
           draws: (losingTeam.draws ?? 0) + 1,
           points: (losingTeam.points ?? 0) + 1,
@@ -139,8 +140,9 @@ export default function SummerGolfLeagueWebsite() {
         return;
       }
     } else {
+      // WIN — winner gets 3 points, loser gets 0
       const { error: winErr } = await supabase
-        .from("Teams")   // FIXED
+        .from("Teams")
         .update({
           wins: (winningTeam.wins ?? 0) + 1,
           points: (winningTeam.points ?? 0) + 3,
@@ -155,7 +157,7 @@ export default function SummerGolfLeagueWebsite() {
       }
 
       const { error: lossErr } = await supabase
-        .from("Teams")   // FIXED
+        .from("Teams")
         .update({
           losses: (losingTeam.losses ?? 0) + 1,
           stroke_diff:
@@ -168,17 +170,14 @@ export default function SummerGolfLeagueWebsite() {
         return;
       }
     }
-    }
 
     setWinner("");
     setOpponent("");
     setWinnerScore("");
     setLoserScore("");
-
     setSubmitStatus("✅ Score saved successfully!");
 
     fetchTeams();
-
     setTimeout(() => setSubmitStatus(""), 4000);
   }
 
@@ -192,7 +191,6 @@ export default function SummerGolfLeagueWebsite() {
   const seed4 = sorted[3] || {};
   const seed5 = sorted[4] || {};
   const seed6 = sorted[5] || {};
-
   return (
     <div
       style={{
@@ -502,8 +500,6 @@ export default function SummerGolfLeagueWebsite() {
             )}
           </div>
         </section>
-        </section>
-
         {/* TEAMS SECTION */}
         <section
           id="teams"
@@ -785,6 +781,7 @@ export default function SummerGolfLeagueWebsite() {
                 Upload Final Score
               </button>
 
+              {/* STATUS MESSAGE */}
               {submitStatus && (
                 <div
                   style={{

@@ -162,7 +162,7 @@ export default function SummerGolfLeagueWebsite() {
     setLoserScore("");
     setSubmitStatus("✅ Score saved successfully!");
 
-    fetchTeams();
+    await fetchTeams();
 
     setTimeout(() => setSubmitStatus(""), 4000);
   }

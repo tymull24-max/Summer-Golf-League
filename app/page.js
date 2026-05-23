@@ -17,7 +17,6 @@ const DEFAULT_PLAYERS = {
   "Shock Tops": ["Jack Behnfeldt", "Cole Keefer"],
 };
 
-// Local fallback if Supabase has no rows
 const DEFAULT_TEAMS_FALLBACK = [
   { name: "Banana Hammocks", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
   { name: "Smoove Operators", wins: 0, losses: 0, draws: 0, stroke_diff: 0, points: 0 },
@@ -69,18 +68,21 @@ export default function SummerGolfLeagueWebsite() {
   async function submitMatch() {
     if (!winner || !opponent || winner === opponent) return;
 
-    const w = parseInt(winnerScore);
-    const l = parseInt(loserScore);
+    const w = Number(winnerScore);
+    const l = Number(loserScore);
 
     if (isNaN(w) || isNaN(l)) return;
 
-    const diff = l - w;
-
-    const winningTeam = teams.find((t) => t.name === winner);
-    const losingTeam = teams.find((t) => t.name === opponent);
+    const winningTeam = teams.find(
+      (t) => t.name.trim() === winner.trim()
+    );
+    const losingTeam = teams.find(
+      (t) => t.name.trim() === opponent.trim()
+    );
 
     if (!winningTeam || !losingTeam) return;
 
+    // DRAW
     if (w === l) {
       await supabase
         .from("teams")
@@ -97,13 +99,21 @@ export default function SummerGolfLeagueWebsite() {
           points: (losingTeam.points ?? 0) + 1,
         })
         .eq("name", opponent);
-    } else if (w < l) {
+    }
+
+    // WINNER HAS LOWER SCORE (GOLF LOGIC)
+    if (w < l) {
+      const diff = l - w;
+
       await supabase
         .from("teams")
         .update({
           wins: (winningTeam.wins ?? 0) + 1,
           points: (winningTeam.points ?? 0) + 3,
-          stroke_diff: (winningTeam.strokeDiff ?? winningTeam.stroke_diff ?? 0) + Math.abs(diff),
+          stroke_diff:
+            (winningTeam.strokeDiff ??
+              winningTeam.stroke_diff ??
+              0) + diff,
         })
         .eq("name", winner);
 
@@ -111,7 +121,10 @@ export default function SummerGolfLeagueWebsite() {
         .from("teams")
         .update({
           losses: (losingTeam.losses ?? 0) + 1,
-          stroke_diff: (losingTeam.strokeDiff ?? losingTeam.stroke_diff ?? 0) - Math.abs(diff),
+          stroke_diff:
+            (losingTeam.strokeDiff ??
+              losingTeam.stroke_diff ??
+              0) - diff,
         })
         .eq("name", opponent);
     }
@@ -369,7 +382,6 @@ export default function SummerGolfLeagueWebsite() {
                       key={team.name}
                       style={{ borderBottom: "2px solid #cbd5e1" }}
                     >
-                      {/* Rank */}
                       <td
                         style={{
                           padding: "12px",
@@ -380,7 +392,6 @@ export default function SummerGolfLeagueWebsite() {
                         #{index + 1}
                       </td>
 
-                      {/* Team name */}
                       <td
                         style={{
                           padding: "12px",
@@ -391,7 +402,6 @@ export default function SummerGolfLeagueWebsite() {
                         {team.name}
                       </td>
 
-                      {/* Players */}
                       <td
                         style={{
                           padding: "12px",
@@ -404,10 +414,8 @@ export default function SummerGolfLeagueWebsite() {
                           : "—"}
                       </td>
 
-                      {/* Spacer */}
                       <td style={{ padding: "12px 40px" }}></td>
 
-                      {/* Wins */}
                       <td
                         style={{
                           padding: "12px",
@@ -418,7 +426,6 @@ export default function SummerGolfLeagueWebsite() {
                         {team.wins ?? 0}
                       </td>
 
-                      {/* Losses */}
                       <td
                         style={{
                           padding: "12px",
@@ -429,7 +436,6 @@ export default function SummerGolfLeagueWebsite() {
                         {team.losses ?? 0}
                       </td>
 
-                      {/* Draws */}
                       <td
                         style={{
                           padding: "12px",
@@ -440,7 +446,6 @@ export default function SummerGolfLeagueWebsite() {
                         {team.draws ?? 0}
                       </td>
 
-                      {/* Stroke diff */}
                       <td
                         style={{
                           padding: "12px",
@@ -452,7 +457,6 @@ export default function SummerGolfLeagueWebsite() {
                         {team.strokeDiff ?? 0}
                       </td>
 
-                      {/* Points */}
                       <td
                         style={{
                           padding: "12px",
@@ -638,9 +642,11 @@ export default function SummerGolfLeagueWebsite() {
                             border: "1px solid #cbd5e1",
                           }}
                         >
-                          <option>Select Winning Team</option>
+                          <option value="">Select Winning Team</option>
                           {teams.map((team) => (
-                            <option key={team.name}>{team.name}</option>
+                            <option key={team.name} value={team.name}>
+                              {team.name}
+                            </option>
                           ))}
                         </select>
                       </td>
@@ -693,9 +699,11 @@ export default function SummerGolfLeagueWebsite() {
                             border: "1px solid #cbd5e1",
                           }}
                         >
-                          <option>Select Opponent</option>
+                          <option value="">Select Opponent</option>
                           {teams.map((team) => (
-                            <option key={team.name}>{team.name}</option>
+                            <option key={team.name} value={team.name}>
+                              {team.name}
+                            </option>
                           ))}
                         </select>
                       </td>

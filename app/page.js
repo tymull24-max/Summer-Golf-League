@@ -57,7 +57,7 @@ export default function SummerGolfLeagueWebsite() {
         losses: t.losses ?? 0,
         draws: t.draws ?? 0,
         points: t.points ?? 0,
-        strokeDiff: t.stroke_diff ?? 0,   // UI value
+        strokeDiff: t.stroke_diff ?? 0, // UI value
       }))
     );
 
@@ -141,7 +141,7 @@ export default function SummerGolfLeagueWebsite() {
         .update({
           wins: winningTeam.wins + 1,
           points: winningTeam.points + 3,
-          stroke_diff: (winningTeam.stroke_diff ?? 0) + diff,   // FIXED
+          stroke_diff: (winningTeam.stroke_diff ?? 0) + diff, // uses DB column
         })
         .eq("name", winner);
 
@@ -154,7 +154,7 @@ export default function SummerGolfLeagueWebsite() {
         .from("teams")
         .update({
           losses: losingTeam.losses + 1,
-          stroke_diff: (losingTeam.stroke_diff ?? 0) - diff,   // FIXED
+          stroke_diff: (losingTeam.stroke_diff ?? 0) - diff, // uses DB column
         })
         .eq("name", opponent);
 
@@ -449,6 +449,7 @@ export default function SummerGolfLeagueWebsite() {
             )}
           </div>
         </section>
+
         {/* TEAMS SECTION */}
         <section
           id="teams"
@@ -537,7 +538,6 @@ export default function SummerGolfLeagueWebsite() {
             ))}
           </div>
         </section>
-
         {/* SUBMIT + BRACKET SECTION */}
         <section
           id="submit"
@@ -755,6 +755,7 @@ export default function SummerGolfLeagueWebsite() {
                 </div>
               )}
             </div>
+
             {/* RIGHT CARD — Bracket */}
             <div
               style={{

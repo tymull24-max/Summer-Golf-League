@@ -3,22 +3,50 @@
 "use client";
 
 import { useState } from "react";
-import { teams, matches } from "../../lib/data";
+import { teams, matches, standings } from "../../lib/data";
 
 export default function AdminPage() {
   const [updatedMatches, setUpdatedMatches] = useState(matches);
 
+  // Update match scores in local state
   const handleScoreChange = (matchId, field, value) => {
     setUpdatedMatches(prev =>
       prev.map(m =>
-        m.id === matchId ? { ...m, [field]: value === "" ? null : Number(value) } : m
+        m.id === matchId
+          ? { ...m, [field]: value === "" ? null : Number(value) }
+          : m
       )
     );
   };
 
+  // Save scores (currently console only)
   const handleSave = () => {
-    console.log("Updated Matches:", updatedMatches);
+    // Write updated scores back into the global matches array
+    updatedMatches.forEach((um) => {
+      const original = matches.find(m => m.id === um.id);
+      original.team1Strokes = um.team1Strokes;
+      original.team2Strokes = um.team2Strokes;
+    });
+
+    console.log("Updated Matches:", matches);
     alert("Scores saved! (Console log only for now)");
+  };
+
+  // ⭐ RESET LEAGUE — clears all scores + clears standings (+/- strokes)
+  const handleReset = () => {
+    // Reset match scores
+    matches.forEach(m => {
+      m.team1Strokes = null;
+      m.team2Strokes = null;
+    });
+
+    // Reset standings (this clears your +/- strokes)
+    standings.length = 0;
+
+    // Update UI state
+    setUpdatedMatches([...matches]);
+
+    alert("League reset!");
   };
 
   const getTeamName = (id) => teams.find(t => t.id === id)?.name || "Unknown";
@@ -74,6 +102,7 @@ export default function AdminPage() {
         </tbody>
       </table>
 
+      {/* Save Scores */}
       <button
         onClick={handleSave}
         style={{
@@ -84,6 +113,21 @@ export default function AdminPage() {
         }}
       >
         Save Scores
+      </button>
+
+      {/* RESET LEAGUE BUTTON */}
+      <button
+        onClick={handleReset}
+        style={{
+          marginTop: "1rem",
+          padding: "10px 20px",
+          fontSize: "16px",
+          cursor: "pointer",
+          backgroundColor: "#f44336",
+          color: "white",
+        }}
+      >
+        Reset League
       </button>
     </div>
   );
